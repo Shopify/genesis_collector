@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'genesis_collector'
+require 'pp'
+
+collector = GenesisCollector::Collector.new
+collector.collect!
+
+pp collector.payload
