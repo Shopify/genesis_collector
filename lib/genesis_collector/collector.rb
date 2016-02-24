@@ -145,7 +145,7 @@ module GenesisCollector
       node_show_output = shellout_with_timeout('knife node show `hostname` -c /etc/chef/client.rb')
       node_show_output.match(/Tags:(.*)/)[0].delete(' ').gsub('Tags:', '').split(',')
     rescue
-      ''
+      []
     end
 
     def read_lsb_key(key)

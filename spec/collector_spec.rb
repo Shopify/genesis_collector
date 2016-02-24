@@ -93,5 +93,11 @@ RSpec.describe GenesisCollector::Collector do
         expect(payload[:chef][:tags]).to eq(['tagone', 'secondary'])
       end
     end
+    context 'when knife fails' do
+      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb', nil) }
+      it 'should get tags' do
+        expect(payload[:chef][:tags]).to eq([])
+      end
+    end
   end
 end
