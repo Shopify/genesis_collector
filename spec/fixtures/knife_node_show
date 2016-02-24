@@ -1,0 +1,9 @@
+Node Name:   genesis.example.com
+Environment: some-branch
+FQDN:        genesis.example.com
+IP:          1.2.3.4
+Run List:    role[location--lax], role[app--genesis--server]
+Roles:       location--lax, base, base--packages, base--chef
+Recipes:     base::apt, base::packages, build-essential, build-essential::default, apt::cacher-client, unattended_upgrades, unattended_upgrades::default, base, base::default, timezone, timezone::default, sysctl::attribute_driver, runit, runit::default
+Platform:    ubuntu 14.04
+Tags:        tagone, secondary

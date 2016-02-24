@@ -2,15 +2,25 @@ require 'json'
 require 'resolv'
 require 'socket'
 require 'genesis_collector/simple_http'
+require 'English'
 
 module GenesisCollector
   class Collector
+    attr_reader :payload
+
     def initialize(config = {})
-      @config = Mash.new(config)
+      @chef_node = config.delete(:chef_node)
+      @config = config
+      @payload = {}
     end
 
     def collect!
-      @payload = {}
+      @sku = get_sku
+      collect_basic_data
+      collect_chef
+      collect_ipmi
+      collect_interface_ips
+      @payload
     end
 
     def submit!
@@ -34,10 +44,10 @@ module GenesisCollector
     end
 
     def collect_basic_data
-      device_attributes = {
+      @payload = {
         type: 'Server',
         hostname: get_hostname,
-        os_attributes: {
+        os: {
           distribution: get_distribution,
           release: get_release,
           codename: get_codename,
@@ -54,7 +64,6 @@ module GenesisCollector
           'CHASSIS_SERIAL_NUMBER' => read_dmi('chassis-serial-number')
         }
       }
-      @payload.merge! device_attributes
     end
 
     # def collect_lldp
@@ -86,11 +95,11 @@ module GenesisCollector
       }
     end
 
-    def collect_chef(node)
+    def collect_chef
       @payload[:chef] = {
         environment: get_chef_environment,
-        roles: node['roles'],
-        run_list: node.run_list.to_s,
+        roles: (@chef_node.respond_to?(:[]) ? @chef_node['roles'] : []),
+        run_list: (@chef_node.respond_to?(:[]) ? @chef_node['run_list'] : ''),
         tags: get_chef_tags
       }
     end
@@ -100,7 +109,8 @@ module GenesisCollector
     def shellout_with_timeout(command, timeout = 2)
       response = `timeout #{timeout} #{command}`
       unless $CHILD_STATUS.success?
-        fail "Call to #{command} timed out after #{timeout} seconds"
+        puts "Call to #{command} timed out after #{timeout} seconds"
+        return ''
       end
       response
     end
@@ -134,6 +144,8 @@ module GenesisCollector
     def get_chef_tags
       node_show_output = shellout_with_timeout('knife node show `hostname` -c /etc/chef/client.rb')
       node_show_output.match(/Tags:(.*)/)[0].delete(' ').gsub('Tags:', '').split(',')
+    rescue
+      ''
     end
 
     def read_lsb_key(key)
@@ -151,14 +163,23 @@ module GenesisCollector
       data.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
     end
 
+    def read_ipmi_fru(key)
+      data = shellout_with_timeout('ipmitool fru')
+      data.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
+    end
+
     def get_sku
       vendor = nil
       serial = nil
       vendor ||= read_dmi 'baseboard-manufacturer'
       serial ||= read_dmi 'baseboard-serial-number'
+      serial = nil if serial == '0123456789'
 
       vendor ||= read_dmi 'system-manufacturer'
       serial ||= read_dmi 'system-serial-number'
+      serial = nil if serial == '0123456789'
+
+      serial ||= read_ipmi_fru('Board Serial')
 
       vendor ||= 'Unknown'
       manufacturer = case vendor
