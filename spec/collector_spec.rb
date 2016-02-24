@@ -100,4 +100,21 @@ RSpec.describe GenesisCollector::Collector do
       end
     end
   end
+
+  describe '#collect_ipmi' do
+    before { stub_shellout('ipmitool lan print', fixture('ipmitool_lan_print')) }
+    let(:payload) { collector.collect_ipmi; collector.payload }
+    it 'should get address' do
+      expect(payload[:ipmi][:address]).to eq('1.2.1.2')
+    end
+    it 'should get netmask' do
+      expect(payload[:ipmi][:netmask]).to eq('255.255.0.0')
+    end
+    it 'should get mac' do
+      expect(payload[:ipmi][:mac]).to eq('0c:ca:ca:03:dc:23')
+    end
+    it 'should get gateway' do
+      expect(payload[:ipmi][:gateway]).to eq('1.2.0.1')
+    end
+  end
 end

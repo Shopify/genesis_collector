@@ -1,0 +1,28 @@
+Set in Progress         : Set Complete
+Auth Type Support       : NONE MD2 MD5 PASSWORD
+Auth Type Enable        : Callback : MD2 MD5 PASSWORD
+                        : User     : MD2 MD5 PASSWORD
+                        : Operator : MD2 MD5 PASSWORD
+                        : Admin    : MD2 MD5 PASSWORD
+                        : OEM      : MD2 MD5 PASSWORD
+IP Address Source       : Static Address
+IP Address              : 1.2.1.2
+Subnet Mask             : 255.255.0.0
+MAC Address             : 0c:ca:ca:03:dc:23
+SNMP Community String   : public
+IP Header               : TTL=0x00 Flags=0x00 Precedence=0x00 TOS=0x00
+BMC ARP Control         : ARP Responses Enabled, Gratuitous ARP Disabled
+Default Gateway IP      : 1.2.0.1
+Default Gateway MAC     : 00:09:0f:03:02:0b
+Backup Gateway IP       : 0.0.0.0
+Backup Gateway MAC      : 00:00:00:00:00:00
+802.1q VLAN ID          : Disabled
+802.1q VLAN Priority    : 0
+RMCP+ Cipher Suites     : 1,2,3,6,7,8,11,12
+Cipher Suite Priv Max   : aaaaXXaaaXXaaXX
+                        :     X=Cipher Suite Unused
+                        :     c=CALLBACK
+                        :     u=USER
+                        :     o=OPERATOR
+                        :     a=ADMIN
+                        :     O=OEM
