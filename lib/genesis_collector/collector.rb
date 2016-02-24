@@ -19,7 +19,7 @@ module GenesisCollector
       collect_basic_data
       collect_chef
       collect_ipmi
-      collect_interface_ips
+      collect_network_interfaces
       @payload
     end
 
@@ -30,17 +30,30 @@ module GenesisCollector
       http.patch("/api/devices/#{@sku}", @payload)
     end
 
-    def collect_interface_ips
+    def collect_network_interfaces
       # I'm assuming that physical means it is of the form "ethX", so biosdevnames break this assumption.
       interfaces = {}
       Socket.getifaddrs.each do |ifaddr|
         next if !ifaddr.name.start_with?('eth', 'bond') || !ifaddr.addr.ipv4?
-        interfaces[ifaddr.name] ||= []
-        interfaces[ifaddr.name] << { address:  ifaddr.addr.ip_address,
-                                     netmask:  ifaddr.netmask.ip_address
-                                   }
+        interfaces[ifaddr.name] ||= {}
+        interfaces[ifaddr.name][:addresses] ||= []
+        interfaces[ifaddr.name][:addresses] << {
+          address:  ifaddr.addr.ip_address,
+          netmask:  ifaddr.netmask.ip_address
+        }
       end
-      @payload[:interfaces] = interfaces
+      @payload[:network_interfaces] = interfaces.reduce([]) { |memo, (k, v)| memo << v.merge(name: k) }
+      @payload[:network_interfaces].each do |i|
+        i[:mac_address] = read_mac_address(i[:name])
+        i[:product] = ''
+        i[:speed] = read_interface_info(i[:name], 'speed')
+        i[:vendor_name] = ''
+        i[:duplex] = read_interface_info(i[:name], 'duplex')
+        i[:link_type] = ''
+        i[:neighbor] = get_network_neighbor(i[:name])
+        i.merge!(get_interface_driver(i[:name]))
+      end
+
     end
 
     def collect_basic_data
@@ -196,6 +209,27 @@ module GenesisCollector
     def read_dmi(key)
       value = shellout_with_timeout("dmidecode -s #{key}").gsub(/\s+|\./, '')
       value.empty? ? nil : value
+    end
+
+    def read_mac_address(interface)
+      if File.exist?("/sys/class/net/#{interface}/bonding_slave/perm_hwaddr")
+        read_interface_info(interface, 'bonding_slave/perm_hwaddr')
+      else
+        read_interface_info(interface, 'address')
+      end
+    end
+
+    def read_interface_info(interface, key)
+      File.read("/sys/class/net/#{interface}/#{key}")
+    end
+
+    def get_interface_driver(interface)
+      value = shellout_with_timeout("ethtool --driver #{interface}")
+      { driver: value.match(/^driver: (.*)/)[1], driver_version: value.match(/^version: (.*)/)[1] }
+    end
+
+    def get_network_neighbor(interface_name)
+      'TODO'
     end
   end
 end

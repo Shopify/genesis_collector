@@ -100,18 +100,16 @@ end
 
 def stub_file_content(file, content)
   stub_file_exists(file)
-  allow(IO).to receive(:read).and_call_original
   allow(IO).to receive(:read).with(file).and_return(content)
 end
 
 def stub_file_exists(file, exists: true)
-  allow(File).to receive(:exist?).and_call_original
-  allow(File).to receive(:exists?).and_call_original
   allow(File).to receive(:exist?).with(file).and_return(exists)
   allow(File).to receive(:exists?).with(file).and_return(exists)
 end
 
 def fixture(file)
+  allow(IO).to receive(:read).with("spec/fixtures/#{file}").and_call_original
   File.read("spec/fixtures/#{file}")
 end
 
