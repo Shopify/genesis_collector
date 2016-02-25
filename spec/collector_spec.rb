@@ -118,7 +118,7 @@ RSpec.describe GenesisCollector::Collector do
     end
   end
 
-  describe '#collect_network_interfaces', focus: true do
+  describe '#collect_network_interfaces' do
     before do
       allow(Socket).to receive(:getifaddrs).and_return([
         instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.255.0')),
@@ -136,6 +136,7 @@ RSpec.describe GenesisCollector::Collector do
       stub_file_content('/sys/class/net/eth1/duplex', 'half')
       stub_shellout('ethtool --driver eth0', fixture('ethtool_driver1'))
       stub_shellout('ethtool --driver eth1', fixture('ethtool_driver2'))
+      stub_shellout('lldpctl -f keyvalue', fixture('lldp'))
     end
     let(:payload) { collector.collect_network_interfaces; collector.payload }
     it 'should get 2 interfaces' do
@@ -201,6 +202,59 @@ RSpec.describe GenesisCollector::Collector do
       skip('TODO')
       expect(payload[:network_interfaces][0][:link_type]).to eq('')
       expect(payload[:network_interfaces][1][:link_type]).to eq('')
+    end
+    context 'network neighbors' do
+      it 'gets chassis name' do
+        expect(payload[:network_interfaces][0][:neighbor][:chassis_name]).to eq('lax-leaf-0601')
+        expect(payload[:network_interfaces][1][:neighbor][:chassis_name]).to eq('lax-leaf-0602')
+      end
+      it 'gets chassis description' do
+        expect(payload[:network_interfaces][0][:neighbor][:chassis_desc]).to eq('Arista Networks EOS version 4.14.9M running on an Arista Networks DCS-7050T-64')
+        expect(payload[:network_interfaces][1][:neighbor][:chassis_desc]).to eq('Arista Networks EOS version 4.14.9M running on an Arista Networks DCS-7050T-64')
+      end
+      it 'gets chassis id type' do
+        expect(payload[:network_interfaces][0][:neighbor][:chassis_id_type]).to eq('mac')
+        expect(payload[:network_interfaces][1][:neighbor][:chassis_id_type]).to eq('mac')
+      end
+      it 'gets chassis id value' do
+        expect(payload[:network_interfaces][0][:neighbor][:chassis_id_value]).to eq('00:1c:71:76:52:e5')
+        expect(payload[:network_interfaces][1][:neighbor][:chassis_id_value]).to eq('00:1c:71:73:42:5f')
+      end
+      it 'gets port id type' do
+        expect(payload[:network_interfaces][0][:neighbor][:port_id_type]).to eq('ifname')
+        expect(payload[:network_interfaces][1][:neighbor][:port_id_type]).to eq('ifname')
+      end
+      it 'gets port id value' do
+        expect(payload[:network_interfaces][0][:neighbor][:port_id_value]).to eq('Ethernet9')
+        expect(payload[:network_interfaces][1][:neighbor][:port_id_value]).to eq('Ethernet29')
+      end
+      it 'gets port description' do
+        expect(payload[:network_interfaces][0][:neighbor][:port_desc]).to eq('Not received')
+        expect(payload[:network_interfaces][1][:neighbor][:port_desc]).to eq('Not received')
+      end
+      it 'gets vlan id' do
+        expect(payload[:network_interfaces][0][:neighbor][:vlan_id]).to eq('601')
+        expect(payload[:network_interfaces][1][:neighbor][:vlan_id]).to eq('602')
+      end
+      it 'gets vlan name' do
+        expect(payload[:network_interfaces][0][:neighbor][:vlan_name]).to eq(nil)
+        expect(payload[:network_interfaces][1][:neighbor][:vlan_name]).to eq(nil)
+      end
+    end
+  end
+  describe '#parse_lldp' do
+    it 'should only call lldp once' do
+      allow(collector).to receive(:shellout_with_timeout).and_return(fixture('lldp')).once
+      collector.send(:parse_lldp)
+      collector.send(:parse_lldp)
+    end
+  end
+  describe '#get_network_neighbor' do
+    it 'should only call parse_lldp once' do
+      allow(collector).to receive(:shellout_with_timeout).and_return(fixture('lldp')).once
+      allow(collector).to receive(:parse_lldp).and_return({}).once
+      collector.send(:get_network_neighbor, 'eth0')
+      collector.send(:get_network_neighbor, 'eth1')
     end
   end
 end

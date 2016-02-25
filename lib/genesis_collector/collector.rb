@@ -45,11 +45,11 @@ module GenesisCollector
       @payload[:network_interfaces] = interfaces.reduce([]) { |memo, (k, v)| memo << v.merge(name: k) }
       @payload[:network_interfaces].each do |i|
         i[:mac_address] = read_mac_address(i[:name])
-        i[:product] = ''
+        i[:product] = nil
         i[:speed] = read_interface_info(i[:name], 'speed')
-        i[:vendor_name] = ''
+        i[:vendor_name] = nil
         i[:duplex] = read_interface_info(i[:name], 'duplex')
-        i[:link_type] = ''
+        i[:link_type] = nil
         i[:neighbor] = get_network_neighbor(i[:name])
         i.merge!(get_interface_driver(i[:name]))
       end
@@ -229,7 +229,38 @@ module GenesisCollector
     end
 
     def get_network_neighbor(interface_name)
-      'TODO'
+      @lldp_data ||= parse_lldp
+      @lldp_data[interface_name]
+    end
+
+    def parse_lldp
+      @raw_lldp_output ||= shellout_with_timeout('lldpctl -f keyvalue')
+      data = {}
+      @raw_lldp_output.split("\n").each do |kvp|
+        key, value = kvp.split('=')
+        fields = key.split('.')
+        name = fields[1]
+        data[name] ||= { name: name }
+        case fields[2..-1].join('.')
+        when 'chassis.name'
+          data[name][:chassis_name] = value
+        when 'chassis.descr'
+          data[name][:chassis_desc] = value
+        when 'chassis.mac'
+          data[name][:chassis_id_type] = 'mac'
+          data[name][:chassis_id_value] = value
+        when 'port.ifname'
+          data[name][:port_id_type] = 'ifname'
+          data[name][:port_id_value] = value
+        when 'port.descr'
+          data[name][:port_desc] = value
+        when 'vlan.vlan-id'
+          data[name][:vlan_id] = value
+        when 'vlan'
+          data[name][:vlan_name] = value
+        end
+      end
+      data
     end
   end
 end
