@@ -79,26 +79,6 @@ module GenesisCollector
       }
     end
 
-    # def collect_lldp
-    #   format = 'xml'
-    #   data = shellout_with_timeout('lldpctl -f xml')
-    #   if data.empty? or data.index('xml').nil?
-    #     data = shellout_with_timeout('lldpctl -f keyvalue')
-    #     format = 'kvp'
-    #   end
-    #   if data.empty?
-    #     format = 'flat'
-    #     data = shellout_with_timeout('lldpctl')
-    #   end
-    #
-    #   @api.submit_lldp({ output: format, payload: data })
-    # end
-
-    # def collect_lshw
-    #   payload = shellout_with_timeout('lshw -xml', 40).strip
-    #   @api.submit_lshw({ output: 'xml', payload: payload })
-    # end
-
     def collect_ipmi
       @payload[:ipmi] = {
         address: read_ipmi_attribute('IP Address'),
