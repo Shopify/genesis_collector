@@ -121,19 +121,19 @@ RSpec.describe GenesisCollector::Collector do
   describe '#collect_network_interfaces' do
     before do
       allow(Socket).to receive(:getifaddrs).and_return([
+        instance_double('Socket::Ifaddr', name: 'lo'),
         instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.255.0')),
         instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.5', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.0.0')),
-        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.6', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0')),
-        instance_double('Socket::Ifaddr', name: 'eth2', addr: instance_double('Socket::Addrinfo', ip_address: '2001:0db8:0000:0000:0000:ff00:0042:8329', ipv4?: false))
+        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.6', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0'))
       ])
-      stub_file_content('/sys/class/net/eth0/address', '0c:ca:ca:03:12:34')
-      stub_file_content('/sys/class/net/eth1/address', '0c:ca:ca:03:12:35')
-      stub_file_content('/sys/class/net/eth0/speed', '10000')
-      stub_file_content('/sys/class/net/eth1/speed', '1000')
+      stub_file_content('/sys/class/net/eth0/address', "0c:ca:ca:03:12:34\n")
+      stub_file_content('/sys/class/net/eth1/address', "0c:ca:ca:03:12:35")
+      stub_file_content('/sys/class/net/eth0/speed', "10000\n")
+      stub_file_content('/sys/class/net/eth1/speed', "1000\n")
       stub_file_exists('/sys/class/net/eth0/bonding_slave/perm_hwaddr', exists: false)
       stub_file_exists('/sys/class/net/eth1/bonding_slave/perm_hwaddr', exists: false)
-      stub_file_content('/sys/class/net/eth0/duplex', 'full')
-      stub_file_content('/sys/class/net/eth1/duplex', 'half')
+      stub_file_content('/sys/class/net/eth0/duplex', "full\n")
+      stub_file_content('/sys/class/net/eth1/duplex', "half\n")
       stub_shellout('ethtool --driver eth0', fixture('ethtool_driver1'))
       stub_shellout('ethtool --driver eth1', fixture('ethtool_driver2'))
       stub_shellout('lldpctl -f keyvalue', fixture('lldp'))
@@ -176,14 +176,35 @@ RSpec.describe GenesisCollector::Collector do
     end
     context 'with bonded interfaces' do
       before do
+        allow(Socket).to receive(:getifaddrs).and_return([
+          instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ipv4?: false)),
+          instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ipv4?: false)),
+          instance_double('Socket::Ifaddr', name: 'bond0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0'))
+        ])
         stub_file_content('/sys/class/net/eth0/address', '0c:ca:ca:03:12:34')
         stub_file_content('/sys/class/net/eth1/address', '0c:ca:ca:03:12:34')
         stub_file_content('/sys/class/net/eth0/bonding_slave/perm_hwaddr', '0c:ca:ca:03:12:34')
         stub_file_content('/sys/class/net/eth1/bonding_slave/perm_hwaddr', '0c:ca:ca:03:12:35')
+        stub_file_content('/sys/class/net/bond0/address', '0c:ca:ca:03:12:34')
+        stub_file_content('/sys/class/net/bond0/speed', '10000')
+        stub_file_content('/sys/class/net/bond0/duplex', 'full')
+        stub_shellout('ethtool --driver bond0', fixture('ethtool_driver_bond'))
       end
       it 'should get the real permanent mac address' do
         expect(payload[:network_interfaces][0][:mac_address]).to eq('0c:ca:ca:03:12:34')
         expect(payload[:network_interfaces][1][:mac_address]).to eq('0c:ca:ca:03:12:35')
+      end
+      it 'should still include ethX devices' do
+        expect(payload[:network_interfaces][0][:addresses].count).to eq(0)
+        expect(payload[:network_interfaces][1][:addresses].count).to eq(0)
+        expect(payload[:network_interfaces][2][:addresses].count).to eq(1)
+        expect(payload[:network_interfaces][2][:addresses][0][:address]).to eq('1.2.3.4')
+      end
+      it 'should get driver' do
+        expect(payload[:network_interfaces][2][:driver]).to eq('bonding')
+      end
+      it 'should get driver version' do
+        expect(payload[:network_interfaces][2][:driver_version]).to eq('3.7.1')
       end
     end
     it 'should get driver' do

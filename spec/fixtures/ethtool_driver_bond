@@ -1,0 +1,9 @@
+driver: bonding
+version: 3.7.1
+firmware-version: 2
+bus-info:
+supports-statistics: no
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no
