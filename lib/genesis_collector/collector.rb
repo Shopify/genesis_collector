@@ -3,6 +3,7 @@ require 'resolv'
 require 'socket'
 require 'genesis_collector/simple_http'
 require 'genesis_collector/network_interfaces'
+require 'genesis_collector/chef'
 require 'English'
 
 module GenesisCollector
@@ -10,6 +11,7 @@ module GenesisCollector
     attr_reader :payload
 
     include GenesisCollector::NetworkInterfaces
+    include GenesisCollector::Chef
 
     def initialize(config = {})
       @chef_node = config.delete(:chef_node)
@@ -65,15 +67,6 @@ module GenesisCollector
       }
     end
 
-    def collect_chef
-      @payload[:chef] = {
-        environment: get_chef_environment,
-        roles: (@chef_node.respond_to?(:[]) ? @chef_node['roles'] : []),
-        run_list: (@chef_node.respond_to?(:[]) ? @chef_node['run_list'] : ''),
-        tags: get_chef_tags
-      }
-    end
-
     private
 
     def shellout_with_timeout(command, timeout = 2)
@@ -103,19 +96,6 @@ module GenesisCollector
 
     def get_hostname
       Socket.gethostname
-    end
-
-    def get_chef_environment
-      env = nil
-      env = File.read('/etc/chef/current_environment').gsub(/\s+/, '') if File.exist? '/etc/chef/current_environment'
-      env || 'unknown'
-    end
-
-    def get_chef_tags
-      node_show_output = shellout_with_timeout('knife node show `hostname` -c /etc/chef/client.rb')
-      node_show_output.match(/Tags:(.*)/)[0].delete(' ').gsub('Tags:', '').split(',')
-    rescue
-      []
     end
 
     def read_lsb_key(key)
