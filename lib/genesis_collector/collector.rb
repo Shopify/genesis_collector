@@ -4,6 +4,7 @@ require 'socket'
 require 'genesis_collector/simple_http'
 require 'genesis_collector/network_interfaces'
 require 'genesis_collector/chef'
+require 'genesis_collector/ipmi'
 require 'English'
 
 module GenesisCollector
@@ -12,6 +13,7 @@ module GenesisCollector
 
     include GenesisCollector::NetworkInterfaces
     include GenesisCollector::Chef
+    include GenesisCollector::IPMI
 
     def initialize(config = {})
       @chef_node = config.delete(:chef_node)
@@ -58,14 +60,7 @@ module GenesisCollector
       }
     end
 
-    def collect_ipmi
-      @payload[:ipmi] = {
-        address: read_ipmi_attribute('IP Address'),
-        netmask: read_ipmi_attribute('Subnet Mask'),
-        mac: read_ipmi_attribute('MAC Address'),
-        gateway: read_ipmi_attribute('Default Gateway IP')
-      }
-    end
+
 
     private
 
@@ -106,16 +101,6 @@ module GenesisCollector
     def subnetify(addr)
       return nil unless addr
       addr.split('.').take(3).join('.')
-    end
-
-    def read_ipmi_attribute(key)
-      data = shellout_with_timeout('ipmitool lan print')
-      data.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
-    end
-
-    def read_ipmi_fru(key)
-      data = shellout_with_timeout('ipmitool fru')
-      data.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
     end
 
     def get_sku
