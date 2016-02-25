@@ -109,19 +109,19 @@ module GenesisCollector
     end
 
     def get_distribution
-      read_lsb_key('DISTRIB_ID').downcase
+      read_lsb_key('DISTRIB_ID')
     end
 
     def get_release
-      read_lsb_key('DISTRIB_RELEASE').downcase
+      read_lsb_key('DISTRIB_RELEASE')
     end
 
     def get_codename
-      read_lsb_key('DISTRIB_CODENAME').downcase
+      read_lsb_key('DISTRIB_CODENAME')
     end
 
     def get_description
-      read_lsb_key('DISTRIB_DESCRIPTION').downcase
+      read_lsb_key('DISTRIB_DESCRIPTION')
     end
 
     def get_hostname
@@ -143,7 +143,7 @@ module GenesisCollector
 
     def read_lsb_key(key)
       @lsb_data ||= File.read('/etc/lsb-release')
-      @lsb_data.match(/#{key}=([\S\W]+)\n/)[1] || 'unknown'
+      @lsb_data.match(/^#{key}=["']?(.+?)["']?$/)[1] || 'unknown'
     end
 
     def subnetify(addr)

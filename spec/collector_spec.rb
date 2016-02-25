@@ -42,7 +42,6 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:hostname]).to eq('test1234.example.com')
     end
     it 'should get os attributes' do
-      skip('TODO')
       expect(payload[:os][:distribution]).to eq('Ubuntu')
       expect(payload[:os][:release]).to eq('14.04')
       expect(payload[:os][:codename]).to eq('trusty')
