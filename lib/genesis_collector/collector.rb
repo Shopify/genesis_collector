@@ -101,11 +101,6 @@ module GenesisCollector
       @lsb_data.match(/^#{key}=["']?(.+?)["']?$/)[1] || 'unknown'
     end
 
-    def subnetify(addr)
-      return nil unless addr
-      addr.split('.').take(3).join('.')
-    end
-
     def get_sku
       vendor = nil
       serial = nil
