@@ -32,8 +32,11 @@ module GenesisCollector
 
     def submit!
       fail 'Must collect data first!' unless @payload
-      http = SimpleHTTP.new(host, 'Authorization' => "Token token=\"#{apikey}\"",
-                                  'Content-Type'  => 'application/json')
+      headers = {
+        'Authorization' => "Token token=\"#{@config[:api_token]}\"",
+        'Content-Type'  => 'application/json'
+      }
+      http = SimpleHTTP.new(@config[:endpoint], headers: headers)
       http.patch("/api/devices/#{@sku}", @payload)
     end
 
