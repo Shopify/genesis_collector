@@ -17,12 +17,13 @@ module GenesisCollector
       end
       @payload[:network_interfaces] = interfaces.reduce([]) { |memo, (k, v)| memo << v.merge(name: k) }
       @payload[:network_interfaces].each do |i|
+        lshw_interface = get_lshw_data.network_interfaces.select { |lshw_i| lshw_i[:name] == i[:name] }[0]
         i[:mac_address] = read_mac_address(i[:name])
-        i[:product] = nil
+        i[:product] = lshw_interface.try(:[], :product)
         i[:speed] = read_interface_info(i[:name], 'speed')
-        i[:vendor_name] = nil
+        i[:vendor_name] = lshw_interface.try(:[], :vendor_name)
         i[:duplex] = read_interface_info(i[:name], 'duplex')
-        i[:link_type] = nil
+        i[:link_type] = lshw_interface.try(:[], :link_type)
         i[:neighbor] = get_network_neighbor(i[:name])
         i.merge!(get_interface_driver(i[:name]))
       end

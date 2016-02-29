@@ -136,6 +136,7 @@ RSpec.describe GenesisCollector::Collector do
       stub_shellout('ethtool --driver eth0', fixture('ethtool_driver1'))
       stub_shellout('ethtool --driver eth1', fixture('ethtool_driver2'))
       stub_shellout('lldpctl -f keyvalue', fixture('lldp'))
+      stub_shellout_with_timeout('lshw -xml', 40, fixture('lshw.xml'))
     end
     let(:payload) { collector.collect_network_interfaces; collector.payload }
     it 'should get 2 interfaces' do
@@ -146,14 +147,12 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:name]).to eq('eth1')
     end
     it 'should get product' do
-      skip('TODO')
-      expect(payload[:network_interfaces][0][:product]).to eq('Ethernet Controller 10-Gigabit X540-AT2')
-      expect(payload[:network_interfaces][1][:product]).to eq('Ethernet Controller 10-Gigabit X540-AT2')
+      expect(payload[:network_interfaces][0][:product]).to eq('Ethernet Controller 10 Gigabit X540-AT2')
+      expect(payload[:network_interfaces][1][:product]).to eq(nil)
     end
     it 'should get vendor name' do
-      skip('TODO')
-      expect(payload[:network_interfaces][0][:vendor_name]).to eq('Intel')
-      expect(payload[:network_interfaces][1][:vendor_name]).to eq('Intel')
+      expect(payload[:network_interfaces][0][:vendor_name]).to eq('Intel Corporation')
+      expect(payload[:network_interfaces][1][:vendor_name]).to eq(nil)
     end
     it 'should get mac address' do
       expect(payload[:network_interfaces][0][:mac_address]).to eq('0c:ca:ca:03:12:34')
@@ -219,9 +218,8 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:duplex]).to eq('half')
     end
     it 'should get link type' do
-      skip('TODO')
-      expect(payload[:network_interfaces][0][:link_type]).to eq('')
-      expect(payload[:network_interfaces][1][:link_type]).to eq('')
+      expect(payload[:network_interfaces][0][:link_type]).to eq('twisted pair')
+      expect(payload[:network_interfaces][1][:link_type]).to eq(nil)
     end
     context 'network neighbors' do
       it 'gets chassis name' do
