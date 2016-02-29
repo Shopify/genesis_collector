@@ -1,28 +1,18 @@
-# GenesisCollector
+# genesis_collector
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/genesis_collector`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem is a small utility that will collect information about your hardware server for the purpose of sending it back to a Genesis server.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'genesis_collector'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Install it:
 
     $ gem install genesis_collector
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem ships with a command line tool to show you the data it collects. Simply run `genesis_collector` and you will see all the data. This command does not send any data anywhere.
+
+This gem also ships with a Chef handler which will collect and send the data.
 
 ## Development
 
@@ -32,10 +22,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/genesis_collector.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Shopify/genesis_collector.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
