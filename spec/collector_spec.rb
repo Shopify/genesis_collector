@@ -159,8 +159,8 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:mac_address]).to eq('0c:ca:ca:03:12:35')
     end
     it 'should get speed' do
-      expect(payload[:network_interfaces][0][:speed]).to eq('10000')
-      expect(payload[:network_interfaces][1][:speed]).to eq('1000')
+      expect(payload[:network_interfaces][0][:speed]).to eq('10000000000')
+      expect(payload[:network_interfaces][1][:speed]).to eq('1000000000')
     end
     it 'should get addresses and netmasks' do
       expect(payload[:network_interfaces][0][:addresses].count).to eq(1)

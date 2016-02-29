@@ -20,7 +20,7 @@ module GenesisCollector
         lshw_interface = get_lshw_data.network_interfaces.select { |lshw_i| lshw_i[:name] == i[:name] }[0]
         i[:mac_address] = read_mac_address(i[:name])
         i[:product] = lshw_interface.try(:[], :product)
-        i[:speed] = read_interface_info(i[:name], 'speed')
+        i[:speed] = (read_interface_info(i[:name], 'speed').to_i * 1000000).to_s
         i[:vendor_name] = lshw_interface.try(:[], :vendor_name)
         i[:duplex] = read_interface_info(i[:name], 'duplex')
         i[:link_type] = lshw_interface.try(:[], :link_type)
