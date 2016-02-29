@@ -5,6 +5,7 @@ require 'genesis_collector/simple_http'
 require 'genesis_collector/network_interfaces'
 require 'genesis_collector/chef'
 require 'genesis_collector/ipmi'
+require 'genesis_collector/lshw'
 require 'English'
 
 module GenesisCollector
@@ -14,6 +15,7 @@ module GenesisCollector
     include GenesisCollector::NetworkInterfaces
     include GenesisCollector::Chef
     include GenesisCollector::IPMI
+    include GenesisCollector::Lshw
 
     def initialize(config = {})
       @chef_node = config.delete(:chef_node)
@@ -27,6 +29,9 @@ module GenesisCollector
       collect_chef
       collect_ipmi
       collect_network_interfaces
+      collect_disks
+      collect_cpus
+      collect_memories
       @payload
     end
 
@@ -63,7 +68,17 @@ module GenesisCollector
       }
     end
 
+    def collect_disks
+      @payload[:disks] = get_lshw_data.disks
+    end
 
+    def collect_cpus
+      @payload[:cpus] = get_lshw_data.cpus
+    end
+
+    def collect_memories
+      @payload[:memories] = get_lshw_data.memories
+    end
 
     private
 

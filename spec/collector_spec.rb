@@ -262,6 +262,23 @@ RSpec.describe GenesisCollector::Collector do
       end
     end
   end
+  describe '#collect_disks' do
+    before do
+      parser = instance_double('LshwParser')
+      allow(collector).to receive(:get_lshw_data).and_return(parser)
+      allow(parser).to receive(:disks).and_return([{
+        size: 2423423,
+        serial_number: '23423432',
+        kind: 'scsi',
+        description: 'A Disk',
+        product: 'ABC123'
+      }])
+    end
+    let(:payload) { collector.collect_disks; collector.payload }
+    it 'should get disks' do
+      expect(payload[:disks].count).to eq(1)
+    end
+  end
   describe '#parse_lldp' do
     it 'should only call lldp once' do
       allow(collector).to receive(:shellout_with_timeout).and_return(fixture('lldp')).once

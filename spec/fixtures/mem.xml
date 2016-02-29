@@ -1,0 +1,53 @@
+<node>
+    <node id="memory" claimed="true" class="memory" handle="DMI:0007">
+      <description>System Memory</description>
+      <physid>7</physid>
+      <slot>System board or motherboard</slot>
+      <size units="bytes">34368126976</size>
+      <node id="bank:0" claimed="true" class="memory" handle="DMI:000D">
+        <description>DIMM DDR3 Synchronous 1333 MHz (0.8 ns)</description>
+        <product>HMT41GU7MFR8C-H9</product>
+        <vendor>Hynix/Hyundai</vendor>
+        <physid>0</physid>
+        <serial>48A17BD0</serial>
+        <slot>DIMM_1A</slot>
+        <size units="bytes">8589934592</size>
+        <width units="bits">64</width>
+        <clock units="Hz">1333000000</clock>
+      </node>
+      <node id="bank:1" claimed="true" class="memory" handle="DMI:0010">
+        <description>DIMM DDR3 Synchronous 1333 MHz (0.8 ns)</description>
+        <product>HMT41GU7MFR8C-H9</product>
+        <vendor>Hynix/Hyundai</vendor>
+        <physid>1</physid>
+        <serial>48117BDA</serial>
+        <slot>DIMM_1B</slot>
+        <size units="bytes">8589934592</size>
+        <width units="bits">64</width>
+        <clock units="Hz">1333000000</clock>
+      </node>
+      <node id="bank:2" claimed="true" class="memory" handle="DMI:1104">
+       <description>DIMM DDR3 Synchronous [empty]</description>
+       <physid>2</physid>
+       <slot>DIMM_1C</slot>
+       <width units="bits">64</width>
+      </node>
+      <node id="bank:2" claimed="true" class="memory" handle="DMI:1104">
+       <description>Entry with no slot info</description>
+       <physid>2</physid>
+       <width units="bits">64</width>
+      </node>
+    </node>
+    <node id="cache:2" claimed="true" class="memory" handle="DMI:0006">
+      <description>L3 cache</description>
+      <physid>6</physid>
+      <slot>L3 Cache</slot>
+      <size units="bytes">8388608</size>
+      <capacity units="bytes">8388608</capacity>
+      <capabilities>
+        <capability id="internal" >Internal</capability>
+        <capability id="varies" >Varies With Memory Address</capability>
+        <capability id="unified" >Unified cache</capability>
+      </capabilities>
+    </node>
+</node>

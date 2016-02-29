@@ -1,0 +1,77 @@
+<node>
+  <node id="disk:0" claimed="true" class="disk" handle="SCSI:00:02:00:00">
+   <description>SCSI Disk</description>
+   <product>SMC2208</product>
+   <vendor>SMC</vendor>
+   <physid>2.0.0</physid>
+   <businfo>scsi@0:2.0.0</businfo>
+   <logicalname>/dev/sda</logicalname>
+   <dev>8:0</dev>
+   <version>3.24</version>
+   <serial>1</serial>
+   <size units="bytes">998999326720</size>
+   <configuration>
+    <setting id="ansiversion" value="5" />
+    <setting id="signature" value="995b9e00" />
+   </configuration>
+   <capabilities>
+    <capability id="partitioned" >Partitioned disk</capability>
+    <capability id="partitioned:dos" >MS-DOS partition table</capability>
+   </capabilities>
+  </node>
+  <node id="disk:1" claimed="true" class="disk" handle="SCSI:00:02:01:00">
+   <description>SCSI Disk</description>
+   <product>SMC2208</product>
+   <vendor>SMC</vendor>
+   <physid>2.1.0</physid>
+   <businfo>scsi@0:2.1.0</businfo>
+   <logicalname>/dev/sdb</logicalname>
+   <dev>8:16</dev>
+   <version>3.24</version>
+   <serial>2</serial>
+   <size units="bytes">998999326720</size>
+   <configuration>
+    <setting id="ansiversion" value="5" />
+    <setting id="signature" value="b096b186" />
+   </configuration>
+   <capabilities>
+    <capability id="partitioned" >Partitioned disk</capability>
+    <capability id="partitioned:dos" >MS-DOS partition table</capability>
+   </capabilities>
+  </node>
+  <node id="cdrom" claimed="true" class="disk" handle="SCSI:05:00:00:00">
+    <description>DVD-RAM writer</description>
+    <product>DVD+-RW SN-208FB</product>
+    <vendor>TSSTcorp</vendor>
+    <physid>0.0.0</physid>
+    <businfo>scsi@5:0.0.0</businfo>
+    <logicalname>/dev/cdrom</logicalname>
+    <logicalname>/dev/sr0</logicalname>
+    <dev>11:0</dev>
+    <version>D150</version>
+    <configuration>
+      <setting id="ansiversion" value="5" />
+      <setting id="status" value="nodisc" />
+    </configuration>
+    <capabilities>
+     <capability id="removable" >support is removable</capability>
+     <capability id="audio" >Audio CD playback</capability>
+     <capability id="cd-r" >CD-R burning</capability>
+     <capability id="cd-rw" >CD-RW burning</capability>
+     <capability id="dvd" >DVD playback</capability>
+     <capability id="dvd-r" >DVD-R burning</capability>
+     <capability id="dvd-ram" >DVD-RAM burning</capability>
+    </capabilities>
+   </node>
+    <node id="disk:0" claimed="true" class="disk" handle="SCSI:00:00:00:00">
+      <description>SCSI Disk (no product element)</description>
+      <physid>0.0.0</physid>
+      <businfo>scsi@0:0.0.0</businfo>
+      <logicalname>/dev/sda</logicalname>
+      <dev>8:0</dev>
+      <size units="bytes">1200243695616</size>
+      <configuration>
+        <setting id="sectorsize" value="512" />
+      </configuration>
+    </node>
+</node>
