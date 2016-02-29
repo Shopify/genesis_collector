@@ -1,5 +1,6 @@
 require 'chef/handler'
 require 'chef/mash'
+require 'genesis_collector'
 
 class Chef
   class Handler
@@ -18,7 +19,7 @@ class Chef
       private
 
       def prepare_report
-        @collector = GenesisCollector.Collector.new(@config.merge(chef_node: run_context.node))
+        @collector = GenesisCollector::Collector.new(@config.merge(chef_node: run_context.node))
         @collector.collect!
       rescue => e
         Chef::Log.error("Error collecting system information for Genesis:\n" + e.message)
