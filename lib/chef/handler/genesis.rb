@@ -18,7 +18,7 @@ class Chef
       private
 
       def prepare_report
-        @collector = GenesisCollector.Collector.new(@config)
+        @collector = GenesisCollector.Collector.new(@config.merge(chef_node: run_context.node))
         @collector.collect!
       rescue => e
         Chef::Log.error("Error collecting system information for Genesis:\n" + e.message)
