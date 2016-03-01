@@ -64,38 +64,47 @@ RSpec.describe GenesisCollector::Collector do
   end
 
   describe '#collect_chef' do
-    before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb', '') }
     let(:payload) { collector.collect_chef; collector.payload }
-    context 'with chef environment set' do
-      before { stub_file_content('/etc/chef/current_environment', 'some-branch') }
-      it 'should get environment' do
-        expect(payload[:chef][:environment]).to eq('some-branch')
-      end
-    end
-    context 'with no chef environment set' do
-      it 'should fallback to default environment string' do
-        expect(payload[:chef][:environment]).to eq('unknown')
-      end
-    end
     context 'with chef node' do
-      let(:config) { { chef_node: { 'roles' => ['role-one', 'role-two'], 'run_list' => 'role[location--lax], role[app--genesis--server]' } } }
+      let(:config) { { chef_node: double('Chef::Node', roles: ['role-one', 'role-two'], run_list: 'role[location--lax], role[app--genesis--server]', tags: ['tagone', 'secondary'], chef_environment: 'some-branch', ohai_time: 1456846679.5199523) } }
       it 'should get roles' do
         expect(payload[:chef][:roles]).to eq(['role-one', 'role-two'])
       end
       it 'should get run list' do
         expect(payload[:chef][:run_list]).to eq('role[location--lax], role[app--genesis--server]')
       end
-    end
-    context 'when knife works' do
-      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb', fixture('knife_node_show')) }
       it 'should get tags' do
         expect(payload[:chef][:tags]).to eq(['tagone', 'secondary'])
       end
+      it 'should get environment' do
+        expect(payload[:chef][:environment]).to eq('some-branch')
+      end
+      it 'should get last run' do
+        expect(payload[:chef][:last_run]).to eq('2016-03-01T15:37:59Z')
+      end
     end
-    context 'when knife fails' do
-      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb', nil) }
+    context 'without chef node when knife works' do
+      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles -f json', fixture('knife_node_show')) }
+      it 'should get roles' do
+        expect(payload[:chef][:roles]).to eq(['role-three', 'role-four'])
+      end
+      it 'should get run list' do
+        expect(payload[:chef][:run_list]).to eq('role[location--pdx], role[app--genesis--server]')
+      end
       it 'should get tags' do
-        expect(payload[:chef][:tags]).to eq([])
+        expect(payload[:chef][:tags]).to eq(['tagone', 'primary'])
+      end
+      it 'should get environment' do
+        expect(payload[:chef][:environment]).to eq('some-other-branch')
+      end
+      it 'should get last run' do
+        expect(payload[:chef][:last_run]).to eq('2016-03-01T15:08:17Z')
+      end
+    end
+    context 'without chef node and when knife fails' do
+      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles -f json', nil) }
+      it 'should return nil' do
+        expect(payload[:chef]).to eq(nil)
       end
     end
   end
