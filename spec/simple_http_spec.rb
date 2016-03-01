@@ -19,7 +19,7 @@ RSpec.describe GenesisCollector::SimpleHTTP do
       let(:http) { GenesisCollector::SimpleHTTP.new('http://example.com') }
       context 'with no new headers' do
         let(:uri) { 'http://example.com/1' }
-        before { stub_request(:patch, uri).with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'GenesisCollector/0.1.0' }).to_return(status: 200, body: '{foo: "bar"}') }
+        before { stub_request(:patch, uri).with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>"GenesisCollector/#{GenesisCollector::VERSION}" }).to_return(status: 200, body: '{foo: "bar"}') }
         let!(:response) { http.patch('/1', {}, {}) }
         it 'sends the correct http request' do
         end
