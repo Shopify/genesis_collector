@@ -190,6 +190,9 @@ RSpec.describe GenesisCollector::Collector do
       it 'speed should be nil' do
         expect(payload[:network_interfaces][1][:speed]).to eq(nil)
       end
+      it 'duplex should be nil' do
+        expect(payload[:network_interfaces][1][:duplex]).to eq(nil)
+      end
     end
     context 'with bonded interfaces' do
       before do

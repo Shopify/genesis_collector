@@ -21,9 +21,11 @@ module GenesisCollector
         i[:status] = read_interface_info(i[:name], 'operstate')
         i[:mac_address] = read_mac_address(i[:name])
         i[:product] = lshw_interface.try(:[], :product)
-        i[:speed] = (i[:status] == 'up' ? get_interface_speed(i[:name]) : nil)
+        if i[:status] == 'up'
+          i[:speed] = get_interface_speed(i[:name])
+          i[:duplex] = read_interface_info(i[:name], 'duplex')
+        end
         i[:vendor_name] = lshw_interface.try(:[], :vendor_name)
-        i[:duplex] = read_interface_info(i[:name], 'duplex')
         i[:link_type] = lshw_interface.try(:[], :link_type)
         i[:neighbor] = get_network_neighbor(i[:name])
         i.merge!(get_interface_driver(i[:name]))
