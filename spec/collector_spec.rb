@@ -127,6 +127,10 @@ RSpec.describe GenesisCollector::Collector do
       ])
       stub_file_content('/sys/class/net/eth0/address', "0c:ca:ca:03:12:34\n")
       stub_file_content('/sys/class/net/eth1/address', "0c:ca:ca:03:12:35")
+      stub_file_content('/sys/class/net/eth0/operstate', "up\n")
+      stub_file_content('/sys/class/net/eth1/operstate', 'up')
+      stub_file_content('/sys/class/net/eth0/carrier', "1\n")
+      stub_file_content('/sys/class/net/eth1/carrier', '1')
       stub_file_content('/sys/class/net/eth0/speed', "10000\n")
       stub_file_content('/sys/class/net/eth1/speed', "1000\n")
       stub_file_exists('/sys/class/net/eth0/bonding_slave/perm_hwaddr', exists: false)
@@ -145,6 +149,10 @@ RSpec.describe GenesisCollector::Collector do
     it 'should get names' do
       expect(payload[:network_interfaces][0][:name]).to eq('eth0')
       expect(payload[:network_interfaces][1][:name]).to eq('eth1')
+    end
+    it 'should get the status' do
+      expect(payload[:network_interfaces][0][:status]).to eq('up')
+      expect(payload[:network_interfaces][1][:status]).to eq('up')
     end
     it 'should get product' do
       expect(payload[:network_interfaces][0][:product]).to eq('Ethernet Controller 10 Gigabit X540-AT2')
@@ -172,6 +180,17 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:addresses][0][:netmask]).to eq('255.255.0.0')
       expect(payload[:network_interfaces][1][:addresses][1][:netmask]).to eq('255.0.0.0')
     end
+    context 'with a down interface' do
+      before do
+        stub_file_content('/sys/class/net/eth1/operstate', 'down')
+      end
+      it 'should get the status' do
+        expect(payload[:network_interfaces][1][:status]).to eq('down')
+      end
+      it 'speed should be nil' do
+        expect(payload[:network_interfaces][1][:speed]).to eq(nil)
+      end
+    end
     context 'with bonded interfaces' do
       before do
         allow(Socket).to receive(:getifaddrs).and_return([
@@ -184,6 +203,8 @@ RSpec.describe GenesisCollector::Collector do
         stub_file_content('/sys/class/net/eth0/bonding_slave/perm_hwaddr', '0c:ca:ca:03:12:34')
         stub_file_content('/sys/class/net/eth1/bonding_slave/perm_hwaddr', '0c:ca:ca:03:12:35')
         stub_file_content('/sys/class/net/bond0/address', '0c:ca:ca:03:12:34')
+        stub_file_content('/sys/class/net/bond0/operstate', 'up')
+        stub_file_content('/sys/class/net/bond0/carrier', '1')
         stub_file_content('/sys/class/net/bond0/speed', '10000')
         stub_file_content('/sys/class/net/bond0/duplex', 'full')
         stub_shellout('ethtool --driver bond0', fixture('ethtool_driver_bond'))

@@ -18,9 +18,10 @@ module GenesisCollector
       @payload[:network_interfaces] = interfaces.reduce([]) { |memo, (k, v)| memo << v.merge(name: k) }
       @payload[:network_interfaces].each do |i|
         lshw_interface = get_lshw_data.network_interfaces.select { |lshw_i| lshw_i[:name] == i[:name] }[0]
+        i[:status] = read_interface_info(i[:name], 'operstate')
         i[:mac_address] = read_mac_address(i[:name])
         i[:product] = lshw_interface.try(:[], :product)
-        i[:speed] = (read_interface_info(i[:name], 'speed').to_i * 1000000).to_s
+        i[:speed] = (i[:status] == 'up' ? get_interface_speed(i[:name]) : nil)
         i[:vendor_name] = lshw_interface.try(:[], :vendor_name)
         i[:duplex] = read_interface_info(i[:name], 'duplex')
         i[:link_type] = lshw_interface.try(:[], :link_type)
@@ -46,6 +47,11 @@ module GenesisCollector
     def get_interface_driver(interface)
       value = shellout_with_timeout("ethtool --driver #{interface}")
       { driver: value.match(/^driver: (.*)/)[1], driver_version: value.match(/^version: (.*)/)[1] }
+    end
+
+    def get_interface_speed(interface)
+      return 0 if read_interface_info(interface, 'carrier') == '0'
+      (read_interface_info(interface, 'speed').to_i * 1000000).to_s
     end
 
     def get_network_neighbor(interface_name)
