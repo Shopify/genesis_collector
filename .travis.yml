@@ -1,0 +1,13 @@
+language: ruby
+sudo: false
+rvm:
+  - 1.9
+  - 2.0
+  - 2.1.8
+  - 2.2.4
+  - 2.3.0
+
+matrix:
+  allow_failures:
+    - rvm: 1.9
+    - rvm: 2.0
