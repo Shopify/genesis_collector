@@ -1,27 +1,9 @@
 require 'genesis_collector/lshw_parser'
 
 RSpec.describe GenesisCollector::LshwParser do
-  let(:disks)   { fixture('disks.xml') }
   let(:cpu)     { fixture('cpu.xml') }
   let(:mem)     { fixture('mem.xml') }
   let(:network) { fixture('lshw_network_interfaces.xml') }
-
-  context 'disks' do
-    it 'should parse properly' do
-      lshw = GenesisCollector::LshwParser.new(disks)
-      expect(lshw.disks[0][:serial_number]).to eq('1')
-      expect(lshw.disks[0][:size]).to eq(998999326720)
-      expect(lshw.disks[0][:kind]).to eq('scsi')
-      expect(lshw.disks[0][:product]).to eq('SMC2208')
-      expect(lshw.disks[0][:vendor_name]).to eq(nil)
-      expect(lshw.disks[2][:description]).to eq('DVD-RAM writer')
-    end
-
-    it 'should parse disk nodes with no product element' do
-      lshw = GenesisCollector::LshwParser.new(disks)
-      expect(lshw.disks[3][:description]).to eq('SCSI Disk (no product element)')
-    end
-  end
 
   context 'cpu' do
     it 'should parse properly' do
