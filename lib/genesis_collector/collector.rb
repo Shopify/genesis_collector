@@ -7,6 +7,7 @@ require 'genesis_collector/chef'
 require 'genesis_collector/ipmi'
 require 'genesis_collector/lshw'
 require 'genesis_collector/disks'
+require 'genesis_collector/dmidecode'
 require 'English'
 
 module GenesisCollector
@@ -18,6 +19,7 @@ module GenesisCollector
     include GenesisCollector::IPMI
     include GenesisCollector::Lshw
     include GenesisCollector::Disks
+    include GenesisCollector::DmiDecode
 
     def initialize(config = {})
       @chef_node = config.delete(:chef_node)
@@ -71,7 +73,16 @@ module GenesisCollector
     end
 
     def collect_cpus
-      @payload[:cpus] = get_lshw_data.cpus
+      @payload[:cpus] = get_dmi_data['processor'].map do |p|
+        {
+          description: p['version'],
+          cores: p['core_count'].to_i,
+          threads: p['thread_count'].to_i,
+          speed: p['current_speed'],
+          vendor_name: p['manufacturer'],
+          physid: p['socket_designation']
+        }
+      end
     end
 
     def collect_memories

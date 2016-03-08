@@ -349,6 +349,39 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][4][:serial_number]).to eq('14270C89BDC6')
     end
   end
+  describe '#collect_cpus' do
+    before do
+      stub_shellout('dmidecode --type processor --type memory', fixture('dmidecode'))
+    end
+    let(:payload) { collector.collect_cpus; collector.payload }
+    it 'should get cpus' do
+      expect(payload[:cpus].count).to eq(2)
+    end
+    it 'should get description' do
+      expect(payload[:cpus][0][:description]).to eq('Intel(R) Xeon(R) CPU E5-2667 v2 @ 3.30GHz')
+      expect(payload[:cpus][1][:description]).to eq('Intel(R) Xeon(R) CPU E5-2667 v2 @ 3.30GHz')
+    end
+    it 'should get cores' do
+      expect(payload[:cpus][0][:cores]).to eq(8)
+      expect(payload[:cpus][1][:cores]).to eq(8)
+    end
+    it 'should get threads' do
+      expect(payload[:cpus][0][:threads]).to eq(16)
+      expect(payload[:cpus][1][:threads]).to eq(16)
+    end
+    it 'should get speed' do
+      expect(payload[:cpus][0][:speed]).to eq('3300 MHz')
+      expect(payload[:cpus][1][:speed]).to eq('3300 MHz')
+    end
+    it 'should get vendor' do
+      expect(payload[:cpus][0][:vendor_name]).to eq('Intel')
+      expect(payload[:cpus][1][:vendor_name]).to eq('Intel')
+    end
+    it 'should get physid' do
+      expect(payload[:cpus][0][:physid]).to eq('SOCKET 0')
+      expect(payload[:cpus][1][:physid]).to eq('SOCKET 1')
+    end
+  end
   describe '#parse_lldp' do
     it 'should only call lldp once' do
       allow(collector).to receive(:shellout_with_timeout).and_return(fixture('lldp')).once

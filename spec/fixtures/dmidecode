@@ -1,0 +1,479 @@
+# dmidecode 2.12
+SMBIOS 2.7 present.
+
+Handle 0x0004, DMI type 4, 42 bytes
+Processor Information
+	Socket Designation: SOCKET 0
+	Type: Central Processor
+	Family: Xeon
+	Manufacturer: Intel
+	ID: E4 06 03 00 FF FB EB BF
+	Signature: Type 0, Family 6, Model 62, Stepping 4
+	Flags:
+		FPU (Floating-point unit on-chip)
+		VME (Virtual mode extension)
+		DE (Debugging extension)
+		PSE (Page size extension)
+		TSC (Time stamp counter)
+		MSR (Model specific registers)
+		PAE (Physical address extension)
+		MCE (Machine check exception)
+		CX8 (CMPXCHG8 instruction supported)
+		APIC (On-chip APIC hardware supported)
+		SEP (Fast system call)
+		MTRR (Memory type range registers)
+		PGE (Page global enable)
+		MCA (Machine check architecture)
+		CMOV (Conditional move instruction supported)
+		PAT (Page attribute table)
+		PSE-36 (36-bit page size extension)
+		CLFSH (CLFLUSH instruction supported)
+		DS (Debug store)
+		ACPI (ACPI supported)
+		MMX (MMX technology supported)
+		FXSR (FXSAVE and FXSTOR instructions supported)
+		SSE (Streaming SIMD extensions)
+		SSE2 (Streaming SIMD extensions 2)
+		SS (Self-snoop)
+		HTT (Multi-threading)
+		TM (Thermal monitor supported)
+		PBE (Pending break enabled)
+	Version: Intel(R) Xeon(R) CPU E5-2667 v2 @ 3.30GHz
+	Voltage: 0.0 V
+	External Clock: 100 MHz
+	Max Speed: 4000 MHz
+	Current Speed: 3300 MHz
+	Status: Populated, Enabled
+	Upgrade: Socket LGA2011
+	L1 Cache Handle: 0x0005
+	L2 Cache Handle: 0x0006
+	L3 Cache Handle: 0x0007
+	Serial Number: Not Specified
+	Asset Tag: B96D0612A4E7B8B.
+	Part Number: Not Specified
+	Core Count: 8
+	Core Enabled: 8
+	Thread Count: 16
+	Characteristics:
+		64-bit capable
+		Multi-Core
+		Hardware Thread
+		Execute Protection
+		Enhanced Virtualization
+		Power/Performance Control
+
+Handle 0x0008, DMI type 4, 42 bytes
+Processor Information
+	Socket Designation: SOCKET 1
+	Type: Central Processor
+	Family: Xeon
+	Manufacturer: Intel
+	ID: E4 06 03 00 FF FB EB BF
+	Signature: Type 0, Family 6, Model 62, Stepping 4
+	Flags:
+		FPU (Floating-point unit on-chip)
+		VME (Virtual mode extension)
+		DE (Debugging extension)
+		PSE (Page size extension)
+		TSC (Time stamp counter)
+		MSR (Model specific registers)
+		PAE (Physical address extension)
+		MCE (Machine check exception)
+		CX8 (CMPXCHG8 instruction supported)
+		APIC (On-chip APIC hardware supported)
+		SEP (Fast system call)
+		MTRR (Memory type range registers)
+		PGE (Page global enable)
+		MCA (Machine check architecture)
+		CMOV (Conditional move instruction supported)
+		PAT (Page attribute table)
+		PSE-36 (36-bit page size extension)
+		CLFSH (CLFLUSH instruction supported)
+		DS (Debug store)
+		ACPI (ACPI supported)
+		MMX (MMX technology supported)
+		FXSR (FXSAVE and FXSTOR instructions supported)
+		SSE (Streaming SIMD extensions)
+		SSE2 (Streaming SIMD extensions 2)
+		SS (Self-snoop)
+		HTT (Multi-threading)
+		TM (Thermal monitor supported)
+		PBE (Pending break enabled)
+	Version: Intel(R) Xeon(R) CPU E5-2667 v2 @ 3.30GHz
+	Voltage: 0.0 V
+	External Clock: 100 MHz
+	Max Speed: 4000 MHz
+	Current Speed: 3300 MHz
+	Status: Populated, Enabled
+	Upgrade: Socket LGA2011
+	L1 Cache Handle: 0x0009
+	L2 Cache Handle: 0x000A
+	L3 Cache Handle: 0x000B
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: Not Specified
+	Core Count: 8
+	Core Enabled: 8
+	Thread Count: 16
+	Characteristics:
+		64-bit capable
+		Multi-Core
+		Hardware Thread
+		Execute Protection
+		Enhanced Virtualization
+		Power/Performance Control
+
+Handle 0x002B, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Multi-bit ECC
+	Maximum Capacity: 512 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 8
+
+Handle 0x002D, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMA1
+	Bank Locator: P0_Node0_Channel0_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F2EB     
+	Asset Tag: DimmA1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x002F, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMA2
+	Bank Locator: P0_Node0_Channel0_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmA2_Manufacturer
+	Serial Number: DimmA2_SerNum
+	Asset Tag: DimmA2_AssetTag
+	Part Number: DimmA2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+
+Handle 0x0031, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMB1
+	Bank Locator: P0_Node0_Channel1_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F20E     
+	Asset Tag: DimmB1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x0033, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMB2
+	Bank Locator: P0_Node0_Channel1_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmB2_Manufacturer
+	Serial Number: DimmB2_SerNum
+	Asset Tag: DimmB2_AssetTag
+	Part Number: DimmB2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+
+Handle 0x0035, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMC1
+	Bank Locator: P0_Node0_Channel2_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F2DE     
+	Asset Tag: DimmC1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x0037, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMC2
+	Bank Locator: P0_Node0_Channel2_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmC2_Manufacturer
+	Serial Number: DimmC2_SerNum
+	Asset Tag: DimmC2_AssetTag
+	Part Number: DimmC2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+
+Handle 0x0039, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMD1
+	Bank Locator: P0_Node0_Channel3_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F320     
+	Asset Tag: DimmD1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x003B, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x002B
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P1-DIMMD2
+	Bank Locator: P0_Node0_Channel3_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmD2_Manufacturer
+	Serial Number: DimmD2_SerNum
+	Asset Tag: DimmD2_AssetTag
+	Part Number: DimmD2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+
+Handle 0x003D, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Multi-bit ECC
+	Maximum Capacity: 512 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 8
+
+Handle 0x003F, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMME1
+	Bank Locator: P1_Node1_Channel0_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F31C     
+	Asset Tag: DimmE1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x0041, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMME2
+	Bank Locator: P1_Node1_Channel0_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmE2_Manufacturer
+	Serial Number: DimmE2_SerNum
+	Asset Tag: DimmE2_AssetTag
+	Part Number: DimmE2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+
+Handle 0x0043, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMMF1
+	Bank Locator: P1_Node1_Channel1_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F31B     
+	Asset Tag: DimmF1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x0045, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMMF2
+	Bank Locator: P1_Node1_Channel1_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmF2_Manufacturer
+	Serial Number: DimmF2_SerNum
+	Asset Tag: DimmF2_AssetTag
+	Part Number: DimmF2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+
+Handle 0x0047, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMMG1
+	Bank Locator: P1_Node1_Channel2_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F322     
+	Asset Tag: DimmG1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x0049, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMMG2
+	Bank Locator: P1_Node1_Channel2_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmG2_Manufacturer
+	Serial Number: DimmG2_SerNum
+	Asset Tag: DimmG2_AssetTag
+	Part Number: DimmG2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+
+Handle 0x004B, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMMH1
+	Bank Locator: P1_Node1_Channel3_Dimm0
+	Type: DDR3
+	Type Detail: Registered (Buffered)
+	Speed: 1333 MHz
+	Manufacturer: Samsung            
+	Serial Number: 1435F2E4     
+	Asset Tag: DimmH1_AssetTag
+	Part Number: M393B2G70QH0-YK0 
+	Rank: 2
+	Configured Clock Speed: 1333 MHz
+
+Handle 0x004D, DMI type 17, 34 bytes
+Memory Device
+	Array Handle: 0x003D
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: No Module Installed
+	Form Factor: DIMM
+	Set: None
+	Locator: P2-DIMMH2
+	Bank Locator: P1_Node1_Channel3_Dimm1
+	Type: Unknown
+	Type Detail: Synchronous
+	Speed: Unknown
+	Manufacturer: DimmH2_Manufacturer
+	Serial Number: DimmH2_SerNum
+	Asset Tag: DimmH2_AssetTag
+	Part Number: DimmH2_PartNumber
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+

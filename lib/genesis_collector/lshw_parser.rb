@@ -9,19 +9,6 @@ module GenesisCollector
       @doc = Nokogiri::XML(doc)
     end
 
-    def cpus
-      @cpus ||= doc.xpath("//node[@class='processor']").map do |cpu|
-        {
-          description: cpu.at_xpath('.//product').try(:text) || cpu.at_xpath('.//description').try(:text),
-          cores: cpu.at_xpath(".//configuration/setting[@id='cores']/@value").try(:value).try(:to_i),
-          threads: cpu.at_xpath(".//configuration/setting[@id='threads']/@value").try(:value).try(:to_i),
-          speed: cpu.at_xpath('.//size').try(:text).try(:to_i),
-          vendor_name: cpu.at_xpath('.//vendor').try(:text),
-          physid: cpu.at_xpath('.//physid').try(:text).try(:to_i)
-        }
-      end
-    end
-
     def memories
       @memories ||= doc.xpath("//node[@class='memory']/*[@id]").map do |memory|
         mem_size = memory.at_xpath('.//size')
