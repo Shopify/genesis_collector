@@ -1,0 +1,18 @@
+smartctl 6.2 2013-07-26 r3841 [x86_64-linux-3.13.0-66-generic] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+/dev/bus/0 [megaraid_disk_00] [SAT]: Device open changed type from 'megaraid,0' to 'sat+megaraid,0'
+=== START OF INFORMATION SECTION ===
+Device Model:     Crucial_CT960M500SSD1
+Serial Number:    14270C89BDC6
+LU WWN Device Id: 5 00a075 10c89bdc6
+Firmware Version: MU05
+User Capacity:    960,197,124,096 bytes [960 GB]
+Sector Sizes:     512 bytes logical, 4096 bytes physical
+Rotation Rate:    Solid State Device
+Device is:        Not in smartctl database [for details use: -P showall]
+ATA Version is:   ACS-2, ATA8-ACS T13/1699-D revision 6
+SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
+Local Time is:    Tue Mar  8 14:00:19 2016 UTC
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled

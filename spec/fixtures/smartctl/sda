@@ -1,0 +1,14 @@
+smartctl 6.2 2013-07-26 r3841 [x86_64-linux-3.13.0-66-generic] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Vendor:               DELL
+Product:              PERC H710P
+Revision:             3.13
+User Capacity:        959,656,755,200 bytes [959 GB]
+Logical block size:   512 bytes
+Logical Unit id:      0x644a84202f3ce0001d5f635c065db84d
+Serial number:        004db85d065c635f1d00e33c2320344a
+Device type:          disk
+Local Time is:        Mon Mar  7 22:04:35 2016 UTC
+SMART support is:     Unavailable - device lacks SMART capability.

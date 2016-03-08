@@ -6,6 +6,7 @@ require 'genesis_collector/network_interfaces'
 require 'genesis_collector/chef'
 require 'genesis_collector/ipmi'
 require 'genesis_collector/lshw'
+require 'genesis_collector/disks'
 require 'English'
 
 module GenesisCollector
@@ -16,6 +17,7 @@ module GenesisCollector
     include GenesisCollector::Chef
     include GenesisCollector::IPMI
     include GenesisCollector::Lshw
+    include GenesisCollector::Disks
 
     def initialize(config = {})
       @chef_node = config.delete(:chef_node)
@@ -66,10 +68,6 @@ module GenesisCollector
           'CHASSIS_SERIAL_NUMBER' => read_dmi('chassis-serial-number')
         }
       }
-    end
-
-    def collect_disks
-      @payload[:disks] = get_lshw_data.disks
     end
 
     def collect_cpus

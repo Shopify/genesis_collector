@@ -295,19 +295,58 @@ RSpec.describe GenesisCollector::Collector do
   end
   describe '#collect_disks' do
     before do
-      parser = instance_double('LshwParser')
-      allow(collector).to receive(:get_lshw_data).and_return(parser)
-      allow(parser).to receive(:disks).and_return([{
-        size: 2423423,
-        serial_number: '23423432',
-        kind: 'scsi',
-        description: 'A Disk',
-        product: 'ABC123'
-      }])
+      stub_shellout('smartctl --scan', fixture('smartctl/scan'))
+      stub_shellout('smartctl -i /dev/sda', fixture('smartctl/sda'))
+      stub_shellout('smartctl -i /dev/sdb', fixture('smartctl/sdb'))
+      stub_shellout('smartctl -i /dev/sdc', fixture('smartctl/sdc'))
+      stub_shellout('smartctl -i /dev/sdd', fixture('smartctl/sdd'))
+      stub_shellout('smartctl -i /dev/bus/0 -d megaraid,0', fixture('smartctl/megaraid0'))
+      stub_shellout('smartctl -i /dev/bus/0 -d megaraid,1', fixture('smartctl/megaraid0'))
+      stub_shellout('smartctl -i /dev/bus/0 -d megaraid,2', fixture('smartctl/megaraid0'))
     end
     let(:payload) { collector.collect_disks; collector.payload }
     it 'should get disks' do
-      expect(payload[:disks].count).to eq(1)
+      expect(payload[:disks].count).to eq(7)
+    end
+    it 'should get product' do
+      expect(payload[:disks][0][:product]).to eq('PERC H710P')
+      expect(payload[:disks][1][:product]).to eq('SAMSUNG MZ7WD960HMHP-00003')
+      expect(payload[:disks][2][:product]).to eq('INTEL SSDSC2BB240G6')
+      expect(payload[:disks][3][:product]).to eq('HGST HUS724040ALA640')
+      expect(payload[:disks][4][:product]).to eq('Crucial_CT960M500SSD1')
+    end
+    it 'should get vendor' do
+      expect(payload[:disks][0][:vendor_name]).to eq('DELL')
+      expect(payload[:disks][1][:vendor_name]).to eq('SAMSUNG')
+      expect(payload[:disks][2][:vendor_name]).to eq('INTEL')
+      expect(payload[:disks][3][:vendor_name]).to eq('HGST')
+      expect(payload[:disks][4][:vendor_name]).to eq('Crucial')
+    end
+    it 'should get dev' do
+      expect(payload[:disks][0][:dev]).to eq('/dev/sda')
+      expect(payload[:disks][1][:dev]).to eq('/dev/sdb')
+      expect(payload[:disks][2][:dev]).to eq('/dev/sdc')
+      expect(payload[:disks][3][:dev]).to eq('/dev/sdd')
+      expect(payload[:disks][4][:dev]).to eq('/dev/bus/0')
+    end
+    it 'should get kind' do
+      expect(payload[:disks][0][:kind]).to eq('SCSI device')
+      expect(payload[:disks][1][:kind]).to eq('SCSI device')
+      expect(payload[:disks][4][:kind]).to eq('SCSI device')
+    end
+    it 'should get size' do
+      expect(payload[:disks][0][:size]).to eq('959656755200')
+      expect(payload[:disks][1][:size]).to eq('960197124096')
+      expect(payload[:disks][2][:size]).to eq('240057409536')
+      expect(payload[:disks][3][:size]).to eq('4000787030016')
+      expect(payload[:disks][4][:size]).to eq('960197124096')
+    end
+    it 'should get serial number' do
+      expect(payload[:disks][0][:serial_number]).to eq('004db85d065c635f1d00e33c2320344a')
+      expect(payload[:disks][1][:serial_number]).to eq('S1E4NYAG101668')
+      expect(payload[:disks][2][:serial_number]).to eq('BTWA5351028H240AGN')
+      expect(payload[:disks][3][:serial_number]).to eq('PN1334PCKSX7JS')
+      expect(payload[:disks][4][:serial_number]).to eq('14270C89BDC6')
     end
   end
   describe '#parse_lldp' do

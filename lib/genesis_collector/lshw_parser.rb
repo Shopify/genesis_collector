@@ -9,20 +9,6 @@ module GenesisCollector
       @doc = Nokogiri::XML(doc)
     end
 
-    def disks
-      @disks ||= doc.xpath("//node[@class='disk']").map do |disk|
-        disk_size = disk.at_xpath('.//size')
-        {
-          size: disk_size.nil? ? 0 : disk_size.text.to_i,
-          serial_number: disk.at_xpath('.//serial').try(:text),
-          kind:   /(?<kind>[a-zA-Z]+)/.match(disk.at_xpath('.//businfo').text)[:kind],
-          description: disk.at_xpath('.//description').text,
-          product: disk.at_xpath('.//product').try(:text),
-          vendor_name: nil
-        }
-      end
-    end
-
     def cpus
       @cpus ||= doc.xpath("//node[@class='processor']").map do |cpu|
         {
