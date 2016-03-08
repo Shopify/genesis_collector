@@ -382,6 +382,39 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:cpus][1][:physid]).to eq('SOCKET 1')
     end
   end
+  describe '#collect_memories' do
+    before do
+      stub_shellout('dmidecode --type processor --type memory', fixture('dmidecode'))
+    end
+    let(:payload) { collector.collect_memories; collector.payload }
+    it 'should get memories' do
+      expect(payload[:memories].count).to eq(16)
+    end
+    it 'should get description' do
+      expect(payload[:memories][0][:description]).to eq('DIMM Registered (Buffered) 1333 MHz')
+      expect(payload[:memories][1][:description]).to eq('Empty DIMM')
+    end
+    it 'should get size' do
+      expect(payload[:memories][0][:size]).to eq(16384000000)
+      expect(payload[:memories][1][:size]).to eq(0)
+    end
+    it 'should get bank' do
+      expect(payload[:memories][0][:bank]).to eq('P0_Node0_Channel0_Dimm0')
+      expect(payload[:memories][1][:bank]).to eq('P0_Node0_Channel0_Dimm1')
+    end
+    it 'should get slot' do
+      expect(payload[:memories][0][:slot]).to eq('P1-DIMMA1')
+      expect(payload[:memories][1][:slot]).to eq('P1-DIMMA2')
+    end
+    it 'should get vendor' do
+      expect(payload[:memories][0][:vendor_name]).to eq('Samsung')
+      expect(payload[:memories][1][:vendor_name]).to eq(nil)
+    end
+    it 'should get product' do
+      expect(payload[:memories][0][:product]).to eq('M393B2G70QH0-YK0')
+      expect(payload[:memories][1][:product]).to eq(nil)
+    end
+  end
   describe '#parse_lldp' do
     it 'should only call lldp once' do
       allow(collector).to receive(:shellout_with_timeout).and_return(fixture('lldp')).once
