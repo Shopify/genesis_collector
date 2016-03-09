@@ -149,7 +149,10 @@ RSpec.describe GenesisCollector::Collector do
       stub_shellout('ethtool --driver eth0', fixture('ethtool_driver1'))
       stub_shellout('ethtool --driver eth1', fixture('ethtool_driver2'))
       stub_shellout('lldpctl -f keyvalue', fixture('lldp'))
-      stub_shellout_with_timeout('lshw -xml', 40, fixture('lshw.xml'))
+      allow(File).to receive(:readlink).with('/sys/class/net/eth0/device').and_return('../../../0000:06:00.0')
+      allow(File).to receive(:readlink).with('/sys/class/net/eth1/device').and_return('../../../0000:06:00.1')
+      stub_shellout('lspci -v -mm -s 0000:06:00.0', fixture('lspci'))
+      stub_shellout('lspci -v -mm -s 0000:06:00.1', fixture('lspci'))
     end
     let(:payload) { collector.collect_network_interfaces; collector.payload }
     it 'should get 2 interfaces' do
@@ -164,12 +167,12 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:status]).to eq('up')
     end
     it 'should get product' do
-      expect(payload[:network_interfaces][0][:product]).to eq('Ethernet Controller 10 Gigabit X540-AT2')
-      expect(payload[:network_interfaces][1][:product]).to eq(nil)
+      expect(payload[:network_interfaces][0][:product]).to eq('Ethernet Controller 10-Gigabit X540-AT2')
+      expect(payload[:network_interfaces][1][:product]).to eq('Ethernet Controller 10-Gigabit X540-AT2')
     end
     it 'should get vendor name' do
       expect(payload[:network_interfaces][0][:vendor_name]).to eq('Intel Corporation')
-      expect(payload[:network_interfaces][1][:vendor_name]).to eq(nil)
+      expect(payload[:network_interfaces][1][:vendor_name]).to eq('Intel Corporation')
     end
     it 'should get mac address' do
       expect(payload[:network_interfaces][0][:mac_address]).to eq('0c:ca:ca:03:12:34')
@@ -251,6 +254,7 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:duplex]).to eq('half')
     end
     it 'should get link type' do
+      skip('Removed for now, since we are not using lshw')
       expect(payload[:network_interfaces][0][:link_type]).to eq('twisted pair')
       expect(payload[:network_interfaces][1][:link_type]).to eq(nil)
     end
@@ -347,6 +351,72 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][2][:serial_number]).to eq('BTWA5351028H240AGN')
       expect(payload[:disks][3][:serial_number]).to eq('PN1334PCKSX7JS')
       expect(payload[:disks][4][:serial_number]).to eq('14270C89BDC6')
+    end
+  end
+  describe '#collect_cpus' do
+    before do
+      stub_shellout('dmidecode --type processor --type memory', fixture('dmidecode'))
+    end
+    let(:payload) { collector.collect_cpus; collector.payload }
+    it 'should get cpus' do
+      expect(payload[:cpus].count).to eq(2)
+    end
+    it 'should get description' do
+      expect(payload[:cpus][0][:description]).to eq('Intel(R) Xeon(R) CPU E5-2667 v2 @ 3.30GHz')
+      expect(payload[:cpus][1][:description]).to eq('Intel(R) Xeon(R) CPU E5-2667 v2 @ 3.30GHz')
+    end
+    it 'should get cores' do
+      expect(payload[:cpus][0][:cores]).to eq(8)
+      expect(payload[:cpus][1][:cores]).to eq(8)
+    end
+    it 'should get threads' do
+      expect(payload[:cpus][0][:threads]).to eq(16)
+      expect(payload[:cpus][1][:threads]).to eq(16)
+    end
+    it 'should get speed' do
+      expect(payload[:cpus][0][:speed]).to eq('3300 MHz')
+      expect(payload[:cpus][1][:speed]).to eq('3300 MHz')
+    end
+    it 'should get vendor' do
+      expect(payload[:cpus][0][:vendor_name]).to eq('Intel')
+      expect(payload[:cpus][1][:vendor_name]).to eq('Intel')
+    end
+    it 'should get physid' do
+      expect(payload[:cpus][0][:physid]).to eq('SOCKET 0')
+      expect(payload[:cpus][1][:physid]).to eq('SOCKET 1')
+    end
+  end
+  describe '#collect_memories' do
+    before do
+      stub_shellout('dmidecode --type processor --type memory', fixture('dmidecode'))
+    end
+    let(:payload) { collector.collect_memories; collector.payload }
+    it 'should get memories' do
+      expect(payload[:memories].count).to eq(16)
+    end
+    it 'should get description' do
+      expect(payload[:memories][0][:description]).to eq('DIMM Registered (Buffered) 1333 MHz')
+      expect(payload[:memories][1][:description]).to eq('Empty DIMM')
+    end
+    it 'should get size' do
+      expect(payload[:memories][0][:size]).to eq(16384000000)
+      expect(payload[:memories][1][:size]).to eq(0)
+    end
+    it 'should get bank' do
+      expect(payload[:memories][0][:bank]).to eq('P0_Node0_Channel0_Dimm0')
+      expect(payload[:memories][1][:bank]).to eq('P0_Node0_Channel0_Dimm1')
+    end
+    it 'should get slot' do
+      expect(payload[:memories][0][:slot]).to eq('P1-DIMMA1')
+      expect(payload[:memories][1][:slot]).to eq('P1-DIMMA2')
+    end
+    it 'should get vendor' do
+      expect(payload[:memories][0][:vendor_name]).to eq('Samsung')
+      expect(payload[:memories][1][:vendor_name]).to eq(nil)
+    end
+    it 'should get product' do
+      expect(payload[:memories][0][:product]).to eq('M393B2G70QH0-YK0')
+      expect(payload[:memories][1][:product]).to eq(nil)
     end
   end
   describe '#parse_lldp' do
