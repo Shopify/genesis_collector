@@ -84,7 +84,7 @@ module GenesisCollector
     end
 
     def collect_memories
-      @payload[:memories] = get_dmi_data['memory'].map do |m|
+      @payload[:memories] = get_dmi_data['memory_device'].map do |m|
         empty = m['size'] == 'No Module Installed'
         {
           size: m['size'].to_i * 1000000,
