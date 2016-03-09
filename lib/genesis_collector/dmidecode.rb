@@ -44,6 +44,7 @@ module GenesisCollector
       39 => 'power_supply',
       40 => 'additional_information',
       41 => 'onboard_device',
+      127 => 'end_of_table'
     }
 
     def get_dmi_data
@@ -62,8 +63,8 @@ module GenesisCollector
         when /^Handle\s+(.*?), DMI type (.*?),\s+/
           handle = $1.to_i(16)
           type_id = $2.to_i
-          next if type_id == 127
           title = DMI_TYPES[type_id]
+          next if title == 'end_of_table'
           current_title = title
           dict[title] ||= []
           dict[title] << {'handle' => handle}
