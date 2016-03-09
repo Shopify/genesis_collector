@@ -110,7 +110,7 @@ RSpec.describe GenesisCollector::Collector do
   end
 
   describe '#collect_ipmi' do
-    before { stub_shellout('ipmitool lan print', fixture('ipmitool_lan_print')) }
+    before { stub_shellout_with_timeout('ipmitool lan print', 10, fixture('ipmitool_lan_print')) }
     let(:payload) { collector.collect_ipmi; collector.payload }
     it 'should get address' do
       expect(payload[:ipmi][:address]).to eq('1.2.1.2')

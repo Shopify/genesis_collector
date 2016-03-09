@@ -13,8 +13,8 @@ module GenesisCollector
     private
 
     def read_ipmi_attribute(key)
-      data = shellout_with_timeout('ipmitool lan print')
-      data.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
+      @ipmi_lan_output ||= shellout_with_timeout('ipmitool lan print', 10)
+      @ipmi_lan_output.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
     end
 
     def read_ipmi_fru(key)
