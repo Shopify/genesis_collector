@@ -25,7 +25,7 @@ module GenesisCollector
           i[:duplex] = read_interface_info(i[:name], 'duplex')
         end
         i[:neighbor] = get_network_neighbor(i[:name])
-        i.merge!(get_lspci_data(i[:name])) unless i[:name].include?('bond')
+        i.merge!(get_lspci_data(i[:name])) if File.exist?("/sys/class/net/#{i[:name]}/device")
         i.merge!(get_interface_driver(i[:name]))
       end
     end
