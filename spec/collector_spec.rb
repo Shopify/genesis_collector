@@ -302,13 +302,13 @@ RSpec.describe GenesisCollector::Collector do
   describe '#collect_disks' do
     before do
       stub_shellout('smartctl --scan', fixture('smartctl/scan'))
-      stub_shellout('smartctl -i /dev/sda', fixture('smartctl/sda'))
-      stub_shellout('smartctl -i /dev/sdb', fixture('smartctl/sdb'))
-      stub_shellout('smartctl -i /dev/sdc', fixture('smartctl/sdc'))
-      stub_shellout('smartctl -i /dev/sdd', fixture('smartctl/sdd'))
-      stub_shellout('smartctl -i /dev/bus/0 -d megaraid,0', fixture('smartctl/megaraid0'))
-      stub_shellout('smartctl -i /dev/bus/0 -d megaraid,1', fixture('smartctl/megaraid0'))
-      stub_shellout('smartctl -i /dev/bus/0 -d megaraid,2', fixture('smartctl/megaraid0'))
+      stub_shellout_with_timeout('smartctl -i /dev/sda', 5, fixture('smartctl/sda'))
+      stub_shellout_with_timeout('smartctl -i /dev/sdb', 5, fixture('smartctl/sdb'))
+      stub_shellout_with_timeout('smartctl -i /dev/sdc', 5, fixture('smartctl/sdc'))
+      stub_shellout_with_timeout('smartctl -i /dev/sdd', 5, fixture('smartctl/sdd'))
+      stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,0', 5, fixture('smartctl/megaraid0'))
+      stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,1', 5, fixture('smartctl/megaraid0'))
+      stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,2', 5, fixture('smartctl/megaraid0'))
     end
     let(:payload) { collector.collect_disks; collector.payload }
     it 'should get disks' do

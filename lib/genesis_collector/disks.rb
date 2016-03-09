@@ -28,7 +28,7 @@ module GenesisCollector
     end
 
     def get_disk_info(cmd_params)
-      shellout_with_timeout("smartctl -i #{cmd_params}")
+      shellout_with_timeout("smartctl -i #{cmd_params}", 5)
     end
 
   end
