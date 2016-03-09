@@ -132,7 +132,8 @@ RSpec.describe GenesisCollector::Collector do
         instance_double('Socket::Ifaddr', name: 'lo'),
         instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.255.0')),
         instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.5', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.0.0')),
-        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.6', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0'))
+        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.6', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0')),
+        instance_double('Socket::Ifaddr', name: 'docker0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.7', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.0.0'))
       ])
       stub_file_content('/sys/class/net/eth0/address', "0c:ca:ca:03:12:34\n")
       stub_file_content('/sys/class/net/eth1/address', "0c:ca:ca:03:12:35")
