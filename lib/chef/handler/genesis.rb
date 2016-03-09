@@ -17,11 +17,17 @@ class Chef
         if defined?(Bugsnag)
           Bugsnag.configure do |config|
             config.api_key = @config.delete('bugsnag_api_key')
+            config.app_version = GenesisCollector::VERSION
           end
         end
       end
 
       def report
+        if defined?(Bugsnag)
+          Bugsnag.configure do |config|
+            config.release_stage = run_context.node.chef_environment
+          end
+        end
         prepare_report
         send_report
       end
