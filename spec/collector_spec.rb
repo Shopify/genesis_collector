@@ -149,7 +149,10 @@ RSpec.describe GenesisCollector::Collector do
       stub_shellout('ethtool --driver eth0', fixture('ethtool_driver1'))
       stub_shellout('ethtool --driver eth1', fixture('ethtool_driver2'))
       stub_shellout('lldpctl -f keyvalue', fixture('lldp'))
-      stub_shellout_with_timeout('lshw -xml', 40, fixture('lshw.xml'))
+      allow(File).to receive(:readlink).with('/sys/class/net/eth0/device').and_return('../../../0000:06:00.0')
+      allow(File).to receive(:readlink).with('/sys/class/net/eth1/device').and_return('../../../0000:06:00.1')
+      stub_shellout('lspci -v -mm -s 0000:06:00.0', fixture('lspci'))
+      stub_shellout('lspci -v -mm -s 0000:06:00.1', fixture('lspci'))
     end
     let(:payload) { collector.collect_network_interfaces; collector.payload }
     it 'should get 2 interfaces' do
@@ -164,12 +167,12 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:status]).to eq('up')
     end
     it 'should get product' do
-      expect(payload[:network_interfaces][0][:product]).to eq('Ethernet Controller 10 Gigabit X540-AT2')
-      expect(payload[:network_interfaces][1][:product]).to eq(nil)
+      expect(payload[:network_interfaces][0][:product]).to eq('Ethernet Controller 10-Gigabit X540-AT2')
+      expect(payload[:network_interfaces][1][:product]).to eq('Ethernet Controller 10-Gigabit X540-AT2')
     end
     it 'should get vendor name' do
       expect(payload[:network_interfaces][0][:vendor_name]).to eq('Intel Corporation')
-      expect(payload[:network_interfaces][1][:vendor_name]).to eq(nil)
+      expect(payload[:network_interfaces][1][:vendor_name]).to eq('Intel Corporation')
     end
     it 'should get mac address' do
       expect(payload[:network_interfaces][0][:mac_address]).to eq('0c:ca:ca:03:12:34')
@@ -251,6 +254,7 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:duplex]).to eq('half')
     end
     it 'should get link type' do
+      skip('Removed for now, since we are not using lshw')
       expect(payload[:network_interfaces][0][:link_type]).to eq('twisted pair')
       expect(payload[:network_interfaces][1][:link_type]).to eq(nil)
     end

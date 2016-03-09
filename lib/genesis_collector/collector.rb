@@ -5,7 +5,6 @@ require 'genesis_collector/simple_http'
 require 'genesis_collector/network_interfaces'
 require 'genesis_collector/chef'
 require 'genesis_collector/ipmi'
-require 'genesis_collector/lshw'
 require 'genesis_collector/disks'
 require 'genesis_collector/dmidecode'
 require 'English'
@@ -17,7 +16,6 @@ module GenesisCollector
     include GenesisCollector::NetworkInterfaces
     include GenesisCollector::Chef
     include GenesisCollector::IPMI
-    include GenesisCollector::Lshw
     include GenesisCollector::Disks
     include GenesisCollector::DmiDecode
 

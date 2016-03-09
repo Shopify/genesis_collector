@@ -17,17 +17,14 @@ module GenesisCollector
       end
       @payload[:network_interfaces] = interfaces.reduce([]) { |memo, (k, v)| memo << v.merge(name: k) }
       @payload[:network_interfaces].each do |i|
-        lshw_interface = get_lshw_data.network_interfaces.select { |lshw_i| lshw_i[:name] == i[:name] }[0]
         i[:status] = read_interface_info(i[:name], 'operstate')
         i[:mac_address] = read_mac_address(i[:name])
-        i[:product] = lshw_interface.try(:[], :product)
         if i[:status] == 'up'
           i[:speed] = get_interface_speed(i[:name])
           i[:duplex] = read_interface_info(i[:name], 'duplex')
         end
-        i[:vendor_name] = lshw_interface.try(:[], :vendor_name)
-        i[:link_type] = lshw_interface.try(:[], :link_type)
         i[:neighbor] = get_network_neighbor(i[:name])
+        i.merge!(get_lspci_data(i[:name])) unless i[:name].include?('bond')
         i.merge!(get_interface_driver(i[:name]))
       end
     end
@@ -86,6 +83,21 @@ module GenesisCollector
           data[name][:vlan_id] = value
         when 'vlan'
           data[name][:vlan_name] = value
+        end
+      end
+      data
+    end
+
+    def get_lspci_data(interface)
+      slot = File.basename(File.readlink("/sys/class/net/#{interface}/device"))
+      raw_data = shellout_with_timeout("lspci -v -mm -s #{slot}")
+      data = {}
+      raw_data.each_line do |line|
+        if line.match(/^Vendor:(.*)$/)
+          data[:vendor_name] = $1.strip
+        end
+        if line.match(/^Device:(.*)$/)
+          data[:product] = $1.strip
         end
       end
       data
