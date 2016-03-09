@@ -16,7 +16,7 @@ module GenesisCollector
           next
         when /^Handle\s+(.*?),\s+/
           handle = $1.to_i(16)
-        when /(.*)\s+Information\n$/, /(.*)\s+Device\n$/, /(.*)\s+Device Mapped Address\n$/, /(.*)\s+Array Mapped Address\n$/
+        when /(.*)\s+Information\n$/, /(.*)\s+Device\n$/, /(.*)\s+Device Mapped Address\n$/, /(.*)\s+Array Mapped Address\n$/, /Physical\s+(.*)\s+Array\n$/
           title = standardize_dmi_key($1)
           current_title = title
           dict[title] ||= []
