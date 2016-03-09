@@ -7,6 +7,7 @@ module GenesisCollector
       interfaces = {}
       Socket.getifaddrs.each do |ifaddr|
         next if ifaddr.name.start_with?('lo', 'docker', 'veth')
+        next if ifaddr.addr.nil?
         interfaces[ifaddr.name] ||= {}
         interfaces[ifaddr.name][:addresses] ||= []
         next unless ifaddr.addr.ipv4?
