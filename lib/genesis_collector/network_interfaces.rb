@@ -1,4 +1,5 @@
 require 'socket'
+require 'ethtool'
 
 module GenesisCollector
   module NetworkInterfaces
@@ -21,7 +22,7 @@ module GenesisCollector
         i[:mac_address] = read_mac_address(i[:name])
         if i[:status] == 'up'
           i[:speed] = get_interface_speed(i[:name])
-          i[:duplex] = read_interface_info(i[:name], 'duplex')
+          i[:duplex] = EthernetInterface.new(i).duplex
         end
         i[:neighbor] = get_network_neighbor(i[:name])
         i.merge!(get_lspci_data(i[:name])) unless i[:name].include?('bond')
@@ -44,13 +45,13 @@ module GenesisCollector
     end
 
     def get_interface_driver(interface)
-      value = shellout_with_timeout("ethtool --driver #{interface}")
-      { driver: value.match(/^driver: (.*)/)[1], driver_version: value.match(/^version: (.*)/)[1] }
+      interface = EthernetInterface.new(interface)
+      { driver: interface.driver, driver_version: interface.driver_version }
     end
 
     def get_interface_speed(interface)
-      return 0 if read_interface_info(interface, 'carrier') == '0'
-      (read_interface_info(interface, 'speed').to_i * 1000000).to_s
+      value = EthernetInterface.new(interface).speed
+      value = 0 if value == :unknown
     end
 
     def get_network_neighbor(interface_name)
