@@ -14,19 +14,15 @@ class Chef
 
       def initialize(config = {})
         @config = Mash.new(config)
-        if defined?(Bugsnag)
-          Bugsnag.configure do |config|
-            config.api_key = @config.delete('bugsnag_api_key')
-            config.app_version = GenesisCollector::VERSION
-          end
-        end
       end
 
       def report
         if defined?(Bugsnag)
-          Bugsnag.configure do |config|
-            config.release_stage = run_context.node.chef_environment
-          end
+          @bugsnag_config = Bugsnag::Configuration.new
+          @bugsnag_config.api_key = @config.delete('bugsnag_api_key')
+          @bugsnag_config.app_version = GenesisCollector::VERSION
+          @bugsnag_config.project_root = File.expand_path('../../..', File.dirname(__FILE__))
+          @bugsnag_config.release_stage = run_context.node.chef_environment
         end
         prepare_report
         send_report
@@ -38,7 +34,7 @@ class Chef
         @collector = GenesisCollector::Collector.new(@config.merge(chef_node: run_context.node))
         @collector.collect!
       rescue => e
-        Bugsnag.notify(e) if defined?(Bugsnag)
+        Bugsnag::Notification.new(e, @bugsnag_config).deliver if defined?(Bugsnag)
         Chef::Log.error("Error collecting system information for Genesis:\n" + e.message)
         Chef::Log.error(e.backtrace.join("\n"))
       end
@@ -46,7 +42,7 @@ class Chef
       def send_report
         @collector.submit!
       rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT => e
-        Bugsnag.notify(e) if defined?(Bugsnag)
+        Bugsnag::Notification.new(e, @bugsnag_config).deliver if defined?(Bugsnag)
         Chef::Log.error("Could not connect to Genesis. Connection error:\n" + e.message)
         Chef::Log.error(e.backtrace.join("\n"))
       end
