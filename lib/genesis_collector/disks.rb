@@ -10,6 +10,7 @@ module GenesisCollector
         d[:product] = info.match(/^(?:Device Model|Product):\s+(.*)$/)[1]
         d[:serial_number] = info.match(/^Serial (?:n|N)umber:\s+(.*)$/)[1]
         d[:size] = info.match(/^User Capacity:\s+(.*)$/)[1].split('bytes')[0].strip.gsub(',', '')
+        d[:slot] = get_scsi_slot(d[:dev]) if d[:dev] =~ /^\/dev\/sd/
       end
     end
 
@@ -31,5 +32,9 @@ module GenesisCollector
       shellout_with_timeout("smartctl -i #{cmd_params}", 5)
     end
 
+    # FIXME - we might want to handle raid devices differently by parsing megacli
+    def get_scsi_slot(device)
+      File.basename(File.readlink("/sys/class/block/#{File.basename(device)}/device"))
+    end
   end
 end
