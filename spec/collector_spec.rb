@@ -312,6 +312,10 @@ RSpec.describe GenesisCollector::Collector do
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,0', 5, fixture('smartctl/megaraid0'))
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,1', 5, fixture('smartctl/megaraid0'))
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,2', 5, fixture('smartctl/megaraid0'))
+      stub_symlink_target('/sys/class/block/sda/device', '../../../5:0:0:0')
+      stub_symlink_target('/sys/class/block/sdb/device', '../../../4:0:0:0')
+      stub_symlink_target('/sys/class/block/sdc/device', '../../../3:0:0:0')
+      stub_symlink_target('/sys/class/block/sdd/device', '../../../2:0:0:0')
     end
     let(:payload) { collector.collect_disks; collector.payload }
     it 'should get disks' do

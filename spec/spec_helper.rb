@@ -102,6 +102,11 @@ RSpec.configure do |config|
 =end
 end
 
+def stub_symlink_target(file, target)
+  stub_file_exists(file)
+  allow(File).to receive(:readlink).with(file).and_return(target)
+end
+
 def stub_file_content(file, content)
   stub_file_exists(file)
   allow(IO).to receive(:read).with(file).and_return(content)
