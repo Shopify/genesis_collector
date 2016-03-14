@@ -18,7 +18,7 @@ module GenesisCollector
     end
 
     def collect_chef_from_knife
-      output = shellout_with_timeout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles -f json')
+      output = shellout_with_timeout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles --format json')
       _hostname, parsed = JSON.parse(output).first
       {
         environment: parsed['environment'],

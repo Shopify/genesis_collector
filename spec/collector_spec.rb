@@ -97,7 +97,7 @@ RSpec.describe GenesisCollector::Collector do
       end
     end
     context 'without chef node when knife works' do
-      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles -f json', fixture('knife_node_show')) }
+      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles --format json', fixture('knife_node_show')) }
       it 'should get roles' do
         expect(payload[:chef][:roles]).to eq(['role-three', 'role-four'])
       end
@@ -115,7 +115,7 @@ RSpec.describe GenesisCollector::Collector do
       end
     end
     context 'without chef node and when knife fails' do
-      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles -f json', nil) }
+      before { stub_shellout('knife node show `hostname` -c /etc/chef/client.rb -a ohai_time -a run_list -a tags -a environment -a roles --format json', nil) }
       it 'should return nil' do
         expect(payload[:chef]).to eq(nil)
       end
