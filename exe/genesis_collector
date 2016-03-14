@@ -3,8 +3,39 @@
 require 'bundler/setup'
 require 'genesis_collector'
 require 'pp'
+require 'optparse'
+require 'json'
 
-collector = GenesisCollector::Collector.new
+options = {
+  submit: false
+}
+config = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: genesis_collector [options]"
+  opts.on('--submit', 'Submit data to Genesis server') do
+    options[:submit] = true
+  end
+  opts.on_tail('-h', '--help', 'Show this message') do
+    puts opts
+    exit
+  end
+  opts.on_tail('--version', 'Show version') do
+    puts "geensis_collector #{GenesisCollector::VERSION}"
+    exit
+  end
+end.parse!
+
+if true == options[:submit]
+  raise ArgumentError, 'Missing config file: ~/.genesis' unless File.exist?("#{ENV['HOME']}/.genesis")
+  raw_config = JSON.parse(File.read("#{ENV['HOME']}/.genesis"))
+  config[:endpoint] = config['endpoint']
+  config[:api_token] = config['api_token']
+end
+
+collector = GenesisCollector::Collector.new(config)
 collector.collect!
 
 pp collector.payload
+
+collector.submit! if true == options[:submit]
