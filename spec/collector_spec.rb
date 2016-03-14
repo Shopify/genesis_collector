@@ -23,6 +23,19 @@ RSpec.describe GenesisCollector::Collector do
     end
   end
 
+  describe '#read_dmi' do
+    context 'with broken dmidecode' do
+      before do
+        stub_shellout('dmidecode -s baseboard-manufacturer', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nSupermicro")
+        stub_shellout('dmidecode -s baseboard-serial-number', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nHM15CS331193")
+      end
+      it 'should get real value' do
+        expect(collector.send(:read_dmi, 'baseboard-manufacturer')).to eq('Supermicro')
+        expect(collector.send(:read_dmi, 'baseboard-serial-number')).to eq('HM15CS331193')
+      end
+    end
+  end
+
   describe '#collect_basic_data' do
     before do
       allow(Socket).to receive(:gethostname).and_return('test1234.example.com')

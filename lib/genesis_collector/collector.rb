@@ -159,7 +159,7 @@ module GenesisCollector
     end
 
     def read_dmi(key)
-      value = shellout_with_timeout("dmidecode -s #{key}").gsub(/\s+|\./, '')
+      value = shellout_with_timeout("dmidecode -s #{key}").gsub(/^#.+$/, '').gsub(/\s+|\./, '')
       value.empty? ? nil : value
     end
   end
