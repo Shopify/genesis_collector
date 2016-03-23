@@ -8,10 +8,11 @@ module GenesisCollector
         d[:vendor_name] = info.match(/^Vendor:\s+(.*)$/)[1] rescue nil
         d[:vendor_name] ||= info.match(/^Device Model:\s+(\w+)[_ ](?:.*)$/)[1] rescue nil
         d[:product] = info.match(/^(?:Device Model|Product):\s+(.*)$/)[1]
-        d[:serial_number] = info.match(/^Serial (?:n|N)umber:\s+(.*)$/)[1]
+        d[:serial_number] = info.match(/^Serial (?:n|N)umber:\s+(.*)$/)[1] rescue nil
         d[:size] = info.match(/^User Capacity:\s+(.*)$/)[1].split('bytes')[0].strip.gsub(',', '')
         d[:slot] = get_scsi_slot(d[:dev]) if d[:dev] =~ /^\/dev\/sd/
       end
+      @payload[:disks].delete_if { |d| d[:serial_number].nil? }
     end
 
     private
