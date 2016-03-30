@@ -18,8 +18,8 @@ module GenesisCollector
     end
 
     def read_ipmi_fru(key)
-      data = shellout_with_timeout('ipmitool fru')
-      data.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
+      @ipmi_fru_output ||= shellout_with_timeout('ipmitool fru')
+      @ipmi_fru_output.match(/#{key}\s*:\s*(\S+)$/)[1] || 'unknown'
     end
 
   end
