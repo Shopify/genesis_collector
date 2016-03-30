@@ -26,8 +26,8 @@ RSpec.describe GenesisCollector::Collector do
   describe '#read_dmi' do
     context 'with broken dmidecode' do
       before do
-        stub_shellout('dmidecode -s baseboard-manufacturer', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nSupermicro")
-        stub_shellout('dmidecode -s baseboard-serial-number', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nHM15CS331193")
+        stub_dmi('baseboard-manufacturer', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nSupermicro")
+        stub_dmi('baseboard-serial-number', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nHM15CS331193")
       end
       it 'should get real value' do
         expect(collector.send(:read_dmi, 'baseboard-manufacturer')).to eq('Supermicro')
@@ -40,39 +40,64 @@ RSpec.describe GenesisCollector::Collector do
     before do
       allow(Socket).to receive(:gethostname).and_return('test1234.example.com')
       stub_file_content('/etc/lsb-release', fixture('lsb-release'))
-      stub_dmi('system-product-name', 'ABC123+')
       stub_dmi('system-manufacturer', 'Acme Inc')
-      stub_dmi('system-serial-number', '1234567891234')
       stub_dmi('baseboard-manufacturer', 'Super Acme Inc')
-      stub_dmi('baseboard-product-name', 'ABC456B+')
-      stub_dmi('baseboard-serial-number', '34524623454')
       stub_dmi('chassis-manufacturer', 'Acme Chassis Inc')
-      stub_dmi('chassis-serial-number', '2376482364')
     end
-    before { collector.collect_basic_data }
-    let(:payload) { collector.payload }
-    it 'should get hostname' do
-      expect(payload[:hostname]).to eq('test1234.example.com')
+    context 'with working bios' do
+      before do
+        stub_dmi('system-product-name', 'ABC123+')
+        stub_dmi('system-serial-number', '1234567891234')
+        stub_dmi('baseboard-product-name', 'ABC456B+')
+        stub_dmi('baseboard-serial-number', '34524623454')
+        stub_dmi('chassis-serial-number', '2376482364')
+        collector.collect_basic_data
+      end
+      let(:payload) { collector.payload }
+      it 'should get hostname' do
+        expect(payload[:hostname]).to eq('test1234.example.com')
+      end
+      it 'should get os attributes' do
+        expect(payload[:os][:distribution]).to eq('Ubuntu')
+        expect(payload[:os][:release]).to eq('14.04')
+        expect(payload[:os][:codename]).to eq('trusty')
+        expect(payload[:os][:description]).to eq('Ubuntu 14.04.2 LTS')
+      end
+      it 'should get product name' do
+        expect(payload[:product]).to eq('ABC123+')
+      end
+      it 'should get vendor name' do
+        expect(payload[:vendor]).to eq('Acme Inc')
+      end
+      it 'should get extra properties' do
+        expect(payload[:properties]['SYSTEM_SERIAL_NUMBER']).to eq('1234567891234')
+        expect(payload[:properties]['BASEBOARD_VENDOR']).to eq('Super Acme Inc')
+        expect(payload[:properties]['BASEBOARD_PRODUCT_NAME']).to eq('ABC456B+')
+        expect(payload[:properties]['BASEBOARD_SERIAL_NUMBER']).to eq('34524623454')
+        expect(payload[:properties]['CHASSIS_VENDOR']).to eq('Acme Chassis Inc')
+        expect(payload[:properties]['CHASSIS_SERIAL_NUMBER']).to eq('2376482364')
+      end
     end
-    it 'should get os attributes' do
-      expect(payload[:os][:distribution]).to eq('Ubuntu')
-      expect(payload[:os][:release]).to eq('14.04')
-      expect(payload[:os][:codename]).to eq('trusty')
-      expect(payload[:os][:description]).to eq('Ubuntu 14.04.2 LTS')
-    end
-    it 'should get product name' do
-      expect(payload[:product]).to eq('ABC123+')
-    end
-    it 'should get vendor name' do
-      expect(payload[:vendor]).to eq('Acme Inc')
-    end
-    it 'should get extra properties' do
-      expect(payload[:properties]['SYSTEM_SERIAL_NUMBER']).to eq('1234567891234')
-      expect(payload[:properties]['BASEBOARD_VENDOR']).to eq('Super Acme Inc')
-      expect(payload[:properties]['BASEBOARD_PRODUCT_NAME']).to eq('ABC456B+')
-      expect(payload[:properties]['BASEBOARD_SERIAL_NUMBER']).to eq('34524623454')
-      expect(payload[:properties]['CHASSIS_VENDOR']).to eq('Acme Chassis Inc')
-      expect(payload[:properties]['CHASSIS_SERIAL_NUMBER']).to eq('2376482364')
+    context 'with broken bios' do
+      before do
+        allow(Socket).to receive(:gethostname).and_return('test1234.example.com')
+        stub_file_content('/etc/lsb-release', fixture('lsb-release'))
+        stub_dmi('system-product-name', 'X9DRW')
+        stub_dmi('system-serial-number', '0123456789')
+        stub_dmi('baseboard-product-name', 'X9DRW')
+        stub_dmi('baseboard-serial-number', '0123456789')
+        stub_dmi('chassis-serial-number', '0123456789')
+        stub_shellout('ipmitool fru', fixture('ipmitool_fru'))
+        collector.collect_basic_data
+      end
+      let(:payload) { collector.payload }
+      it 'should get correct extra properties' do
+        expect(payload[:product]).to eq('SYS-2028DR-HTTR')
+        expect(payload[:properties]['SYSTEM_SERIAL_NUMBER']).to eq('S23425234234324')
+        expect(payload[:properties]['BASEBOARD_PRODUCT_NAME']).to eq('X9DRT-PT')
+        expect(payload[:properties]['BASEBOARD_SERIAL_NUMBER']).to eq('ZM234234235234')
+        expect(payload[:properties]['CHASSIS_SERIAL_NUMBER']).to eq('CA1351A238463')
+      end
     end
   end
 

@@ -68,6 +68,13 @@ module GenesisCollector
           'CHASSIS_SERIAL_NUMBER' => read_dmi('chassis-serial-number')
         }
       }
+      if read_dmi('system-serial-number') == nil
+        @payload[:product] = read_ipmi_fru('Product Part Number')
+        @payload[:properties]['SYSTEM_SERIAL_NUMBER'] = read_ipmi_fru('Product Serial')
+        @payload[:properties]['BASEBOARD_PRODUCT_NAME'] = read_ipmi_fru('Board Part Number')
+        @payload[:properties]['BASEBOARD_SERIAL_NUMBER'] = read_ipmi_fru('Board Serial')
+        @payload[:properties]['CHASSIS_SERIAL_NUMBER'] = read_ipmi_fru('Chassis Serial')
+      end
     end
 
     def collect_cpus
@@ -138,11 +145,9 @@ module GenesisCollector
       serial = nil
       vendor ||= read_dmi 'baseboard-manufacturer'
       serial ||= read_dmi 'baseboard-serial-number'
-      serial = nil if serial == '0123456789'
 
       vendor ||= read_dmi 'system-manufacturer'
       serial ||= read_dmi 'system-serial-number'
-      serial = nil if serial == '0123456789'
 
       serial ||= read_ipmi_fru('Board Serial')
 
@@ -159,7 +164,8 @@ module GenesisCollector
     end
 
     def read_dmi(key)
-      value = shellout_with_timeout("dmidecode -s #{key}").gsub(/^#.+$/, '').gsub(/\s+|\./, '')
+      value = shellout_with_timeout("dmidecode -s #{key}").gsub(/^#.+$/, '').strip
+      value = '' if '0123456789' == value # sometimes the firmware is broken
       value.empty? ? nil : value
     end
   end

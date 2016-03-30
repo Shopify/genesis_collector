@@ -123,8 +123,7 @@ def fixture(file)
 end
 
 def stub_dmi(key, value)
-  allow_any_instance_of(GenesisCollector::Collector).to \
-    receive(:read_dmi).with(key).and_return(value)
+  stub_shellout("dmidecode -s #{key}", value)
 end
 
 def stub_shellout(command, return_value)
