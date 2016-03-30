@@ -65,7 +65,8 @@ module GenesisCollector
           'BASEBOARD_PRODUCT_NAME' => read_dmi('baseboard-product-name'),
           'BASEBOARD_SERIAL_NUMBER' => read_dmi('baseboard-serial-number'),
           'CHASSIS_VENDOR' => read_dmi('chassis-manufacturer'),
-          'CHASSIS_SERIAL_NUMBER' => read_dmi('chassis-serial-number')
+          'CHASSIS_SERIAL_NUMBER' => read_dmi('chassis-serial-number'),
+          'NODE_POSITION_IN_CHASSIS' => read_node_position
         }
       }
       if read_dmi('system-serial-number') == nil
@@ -166,6 +167,12 @@ module GenesisCollector
     def read_dmi(key)
       value = shellout_with_timeout("dmidecode -s #{key}").gsub(/^#.+$/, '').strip
       value = '' if '0123456789' == value # sometimes the firmware is broken
+      value.empty? ? nil : value
+    end
+
+    def read_node_position
+      value = shellout_with_timeout('sudo ipmicfg -tp nodeid').strip
+      return nil unless ('A'..'Z').include?(value)
       value.empty? ? nil : value
     end
   end

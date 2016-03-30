@@ -36,6 +36,27 @@ RSpec.describe GenesisCollector::Collector do
     end
   end
 
+  describe '#read_node_position' do
+    context 'on old without ipmicfg' do
+      before { stub_shellout('sudo ipmicfg -tp nodeid', '') }
+      it 'returns nil' do
+        expect(collector.send(:read_node_position)).to eq(nil)
+      end
+    end
+    context 'with ipmicfg tool available' do
+      before { stub_shellout('sudo ipmicfg -tp nodeid', 'B') }
+      it 'returns node id' do
+        expect(collector.send(:read_node_position)).to eq('B')
+      end
+    end
+    context 'on old node' do
+      before { stub_shellout('sudo ipmicfg -tp nodeid', 'Not TwinPro') }
+      it 'returns nil' do
+        expect(collector.send(:read_node_position)).to eq(nil)
+      end
+    end
+  end
+
   describe '#collect_basic_data' do
     before do
       allow(Socket).to receive(:gethostname).and_return('test1234.example.com')
@@ -43,6 +64,7 @@ RSpec.describe GenesisCollector::Collector do
       stub_dmi('system-manufacturer', 'Acme Inc')
       stub_dmi('baseboard-manufacturer', 'Super Acme Inc')
       stub_dmi('chassis-manufacturer', 'Acme Chassis Inc')
+      stub_shellout('sudo ipmicfg -tp nodeid', 'B')
     end
     context 'with working bios' do
       before do
@@ -76,6 +98,7 @@ RSpec.describe GenesisCollector::Collector do
         expect(payload[:properties]['BASEBOARD_SERIAL_NUMBER']).to eq('34524623454')
         expect(payload[:properties]['CHASSIS_VENDOR']).to eq('Acme Chassis Inc')
         expect(payload[:properties]['CHASSIS_SERIAL_NUMBER']).to eq('2376482364')
+        expect(payload[:properties]['NODE_POSITION_IN_CHASSIS']).to eq('B')
       end
     end
     context 'with broken bios' do
