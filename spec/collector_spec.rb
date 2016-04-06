@@ -57,6 +57,13 @@ RSpec.describe GenesisCollector::Collector do
     end
   end
 
+  describe '#get_last_boot_time' do
+    before { stub_shellout('date -d "`cut -f1 -d. /proc/uptime` seconds ago" -u', 'Mon Aug 31 09:56:15 UTC 2015') }
+    it 'returns proper timestamp' do
+      expect(collector.send(:get_last_boot_time)).to eq('2015-08-31T09:56:15Z')
+    end
+  end
+
   describe '#collect_basic_data' do
     before do
       allow(Socket).to receive(:gethostname).and_return('test1234.example.com')
@@ -65,6 +72,7 @@ RSpec.describe GenesisCollector::Collector do
       stub_dmi('baseboard-manufacturer', 'Super Acme Inc')
       stub_dmi('chassis-manufacturer', 'Acme Chassis Inc')
       stub_shellout('sudo ipmicfg -tp nodeid', 'B')
+      stub_shellout('date -d "`cut -f1 -d. /proc/uptime` seconds ago" -u', 'Mon Aug 31 09:56:15 UTC 2015')
     end
     context 'with working bios' do
       before do

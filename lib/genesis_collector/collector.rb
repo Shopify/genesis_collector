@@ -57,6 +57,7 @@ module GenesisCollector
           codename: get_codename,
           description: get_description
         },
+        last_boot_at: get_last_boot_time,
         product: read_dmi('system-product-name'),
         vendor: read_dmi('system-manufacturer'),
         properties: {
@@ -134,6 +135,10 @@ module GenesisCollector
 
     def get_hostname
       Socket.gethostname
+    end
+
+    def get_last_boot_time
+      Time.parse(shellout_with_timeout('date -d "`cut -f1 -d. /proc/uptime` seconds ago" -u')).utc.iso8601
     end
 
     def read_lsb_key(key)
