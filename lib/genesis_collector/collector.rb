@@ -152,7 +152,7 @@ module GenesisCollector
       vendor = nil
       serial = nil
       vendor ||= read_dmi 'baseboard-manufacturer'
-      serial ||= read_dmi 'baseboard-serial-number'
+      serial ||= read_dmi 'baseboard-serial-number'.gsub('.','') # dells
 
       vendor ||= read_dmi 'system-manufacturer'
       serial ||= read_dmi 'system-serial-number'
