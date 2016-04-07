@@ -161,7 +161,7 @@ module GenesisCollector
 
       vendor ||= 'Unknown'
       manufacturer = case vendor
-                     when 'DellInc'
+                     when 'Dell Inc.'
                        'DEL'
                      when 'Supermicro'
                        'SPM'
