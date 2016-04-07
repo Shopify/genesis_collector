@@ -11,7 +11,7 @@ require 'English'
 
 module GenesisCollector
   class Collector
-    attr_reader :payload
+    attr_reader :sku, :payload
 
     include GenesisCollector::NetworkInterfaces
     include GenesisCollector::Chef

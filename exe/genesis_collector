@@ -36,6 +36,7 @@ end
 collector = GenesisCollector::Collector.new(config)
 collector.collect!
 
+puts "SKU: #{collector.sku}"
 pp collector.payload
 
 collector.submit! if true == options[:submit]
