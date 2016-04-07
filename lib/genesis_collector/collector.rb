@@ -152,7 +152,7 @@ module GenesisCollector
       vendor = nil
       serial = nil
       vendor ||= read_dmi 'baseboard-manufacturer'
-      serial ||= read_dmi 'baseboard-serial-number'.gsub('.','') # dells
+      serial ||= read_dmi 'baseboard-serial-number'
 
       vendor ||= read_dmi 'system-manufacturer'
       serial ||= read_dmi 'system-serial-number'
@@ -168,7 +168,7 @@ module GenesisCollector
                      else
                        'UKN'
       end
-      "#{manufacturer}-#{serial}"
+      "#{manufacturer}-#{serial}".gsub('.','') # dells
     end
 
     def read_dmi(key)
