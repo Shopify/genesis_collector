@@ -67,9 +67,11 @@ module GenesisCollector
           'BASEBOARD_SERIAL_NUMBER' => read_dmi('baseboard-serial-number'),
           'CHASSIS_VENDOR' => read_dmi('chassis-manufacturer'),
           'CHASSIS_SERIAL_NUMBER' => read_dmi('chassis-serial-number'),
-          'NODE_POSITION_IN_CHASSIS' => read_node_position
         }
       }
+
+      @payload[:properties]['NODE_POSITION_IN_CHASSIS'] = read_node_position if @payload[:vendor] == 'Supermicro'
+
       if read_dmi('system-serial-number') == nil
         @payload[:product] = read_ipmi_fru('Product Part Number')
         @payload[:properties]['SYSTEM_SERIAL_NUMBER'] = read_ipmi_fru('Product Serial')

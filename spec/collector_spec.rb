@@ -71,7 +71,6 @@ RSpec.describe GenesisCollector::Collector do
       stub_dmi('system-manufacturer', 'Acme Inc')
       stub_dmi('baseboard-manufacturer', 'Super Acme Inc')
       stub_dmi('chassis-manufacturer', 'Acme Chassis Inc')
-      stub_shellout('sudo ipmicfg -tp nodeid', 'B')
       stub_shellout('date -d "`cut -f1 -d. /proc/uptime` seconds ago" -u', 'Mon Aug 31 09:56:15 UTC 2015')
     end
     context 'with working bios' do
@@ -106,9 +105,29 @@ RSpec.describe GenesisCollector::Collector do
         expect(payload[:properties]['BASEBOARD_SERIAL_NUMBER']).to eq('34524623454')
         expect(payload[:properties]['CHASSIS_VENDOR']).to eq('Acme Chassis Inc')
         expect(payload[:properties]['CHASSIS_SERIAL_NUMBER']).to eq('2376482364')
+      end
+    end
+
+    context 'when supermicro' do
+      before do
+        stub_shellout('sudo ipmicfg -tp nodeid', 'B')
+        stub_dmi('system-manufacturer', 'Supermicro')
+        stub_dmi('baseboard-manufacturer', 'Supermicro')
+        stub_dmi('chassis-manufacturer', 'Supermicro')
+        stub_dmi('system-product-name', 'ABC123+')
+        stub_dmi('system-serial-number', '1234567891234')
+        stub_dmi('baseboard-product-name', 'ABC456B+')
+        stub_dmi('baseboard-serial-number', '34524623454')
+        stub_dmi('chassis-serial-number', '2376482364')
+        collector.collect_basic_data
+      end
+      let(:payload) { collector.payload }
+
+      it 'should send position' do
         expect(payload[:properties]['NODE_POSITION_IN_CHASSIS']).to eq('B')
       end
     end
+
     context 'with broken bios' do
       before do
         allow(Socket).to receive(:gethostname).and_return('test1234.example.com')
