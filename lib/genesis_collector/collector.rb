@@ -168,7 +168,7 @@ module GenesisCollector
                      else
                        'UKN'
       end
-      "#{manufacturer}-#{serial}"
+      "#{manufacturer}-#{serial}".gsub('.','') # dells
     end
 
     def read_dmi(key)
