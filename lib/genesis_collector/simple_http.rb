@@ -5,7 +5,7 @@ require 'genesis_collector'
 
 module GenesisCollector
   class SimpleHTTP
-    def initialize(host, headers: {}, timeout: 2)
+    def initialize(host, headers: {}, timeout: 10)
       @host = host
       @headers = {'User-Agent' => GenesisCollector::USER_AGENT}.merge! headers
       @timeout = timeout
