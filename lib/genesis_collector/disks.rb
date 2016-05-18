@@ -2,6 +2,7 @@ module GenesisCollector
   module Disks
 
     def collect_disks
+      ensure_command('smartctl')
       @payload[:disks] = enumerate_disks
       @payload[:disks].each do |d|
         info = get_disk_info(d.delete(:smartctl_cmd))

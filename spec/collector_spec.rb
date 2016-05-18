@@ -3,6 +3,33 @@ require 'genesis_collector/collector'
 RSpec.describe GenesisCollector::Collector do
   let(:config) { {} }
   let(:collector) { GenesisCollector::Collector.new(config) }
+
+  describe 'error handling' do
+    before do
+      allow_any_instance_of(GenesisCollector::Collector).to \
+        receive(:get_sku).and_return('ABC123')
+    end
+    context 'with error_handler' do
+      before do
+        config[:error_handler] = ->(a) { raise "TEST ERROR HANDLED: #{a.message}" }
+      end
+      it 'should handle errors' do
+        expect { collector.collect! }.to raise_error(RuntimeError, /TEST ERROR HANDLED/)
+      end
+    end
+    context 'without error_handler' do
+      it 'should hide errors' do
+        collector.collect!
+      end
+    end
+  end
+
+  describe '#safely' do
+    it 'should catch errors' do
+      collector.send(:safely) { raise "foo" }
+    end
+  end
+
   describe '#get_sku' do
     before do
       stub_dmi('baseboard-manufacturer', 'Supermicro')
@@ -395,6 +422,8 @@ RSpec.describe GenesisCollector::Collector do
   end
   describe '#collect_disks' do
     before do
+      allow_any_instance_of(GenesisCollector::Collector).to \
+        receive(:ensure_command).with('smartctl').and_return('/usr/sbin/smartctl')
       stub_shellout('smartctl --scan', fixture('smartctl/scan'))
       stub_shellout_with_timeout('smartctl -i /dev/sda', 5, fixture('smartctl/sda'))
       stub_shellout_with_timeout('smartctl -i /dev/sdb', 5, fixture('smartctl/sdb'))

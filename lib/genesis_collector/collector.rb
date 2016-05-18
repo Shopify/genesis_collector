@@ -27,13 +27,13 @@ module GenesisCollector
 
     def collect!
       @sku = get_sku
-      collect_basic_data
-      collect_chef
-      collect_ipmi
-      collect_network_interfaces
-      collect_disks
-      collect_cpus
-      collect_memories
+      safely { collect_basic_data }
+      safely { collect_chef }
+      safely { collect_ipmi }
+      safely { collect_network_interfaces }
+      safely { collect_disks }
+      safely { collect_cpus }
+      safely { collect_memories }
       @payload
     end
 
@@ -114,6 +114,13 @@ module GenesisCollector
 
     private
 
+    def safely
+      yield
+    rescue StandardError => ex
+      STDERR.puts ex.message
+      @config[:error_handler].call(ex) if @config[:error_handler]
+    end
+
     def shellout_with_timeout(command, timeout = 2)
       response = `timeout #{timeout} #{command}`
       unless $CHILD_STATUS.success?
@@ -173,6 +180,8 @@ module GenesisCollector
                        'UKN'
       end
       "#{manufacturer}-#{serial}".gsub('.','') # dells
+    rescue StandardError => ex
+      raise "Unable to deterimine SKU: #{ex.message}"
     end
 
     def read_dmi(key)
@@ -185,6 +194,10 @@ module GenesisCollector
       value = shellout_with_timeout('sudo ipmicfg -tp nodeid').strip
       return nil unless ('A'..'Z').include?(value)
       value.empty? ? nil : value
+    end
+
+    def ensure_command(command)
+      !`which #{command}`.empty? || raise("#{command} missing!")
     end
   end
 end
