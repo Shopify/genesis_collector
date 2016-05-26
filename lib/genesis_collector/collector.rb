@@ -96,16 +96,20 @@ module GenesisCollector
 
     def collect_memories
       @payload[:memories] = get_dmi_data['memory_device'].map do |m|
-        empty = m['size'] == 'No Module Installed'
-        {
-          size: m['size'].to_i * 1000000,
-          description: empty ? "Empty #{m['form_factor']}" : "#{m['form_factor']} #{m['type_detail']} #{m['speed']}",
-          bank: m['bank_locator'],
-          slot: m['locator'],
-          product: empty ? nil : m['part_number'],
-          vendor_name: empty ? nil : m['manufacturer']
-        }
-      end
+        if m['type'] == 'Flash'
+          nil
+        else
+          empty = m['size'] == 'No Module Installed'
+          {
+            size: m['size'].to_i * 1000000,
+            description: empty ? "Empty #{m['form_factor']}" : "#{m['form_factor']} #{m['type_detail']} #{m['speed']}",
+            bank: m['bank_locator'],
+            slot: m['locator'],
+            product: empty ? nil : m['part_number'],
+            vendor_name: empty ? nil : m['manufacturer']
+          }
+        end
+      end.compact
     end
 
     private
