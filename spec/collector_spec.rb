@@ -218,10 +218,11 @@ RSpec.describe GenesisCollector::Collector do
     before do
       allow(Socket).to receive(:getifaddrs).and_return([
         instance_double('Socket::Ifaddr', name: 'lo'),
-        instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.255.0')),
-        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.5', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.0.0')),
-        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.6', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0')),
-        instance_double('Socket::Ifaddr', name: 'docker0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.7', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.0.0')),
+        instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ip?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.255.0')),
+        instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip_address: 'fd3e:efc1:a0e3:703b::2%eth0', ip?: true), netmask: instance_double('Socket::Addrinfo', ip_address: 'ffff:ffff:ffff:ffff::')),
+        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.5', ip?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.0.0')),
+        instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.6', ip?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0')),
+        instance_double('Socket::Ifaddr', name: 'docker0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.7', ip?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.0.0')),
         instance_double('Socket::Ifaddr', name: 'something0', addr: nil)
       ])
       stub_file_content('/sys/class/net/eth0/address', "0c:ca:ca:03:12:34\n")
@@ -276,9 +277,11 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:speed]).to eq('1000000000')
     end
     it 'should get addresses and netmasks' do
-      expect(payload[:network_interfaces][0][:addresses].count).to eq(1)
+      expect(payload[:network_interfaces][0][:addresses].count).to eq(2)
       expect(payload[:network_interfaces][0][:addresses][0][:address]).to eq('1.2.3.4')
       expect(payload[:network_interfaces][0][:addresses][0][:netmask]).to eq('255.255.255.0')
+      expect(payload[:network_interfaces][0][:addresses][1][:address]).to eq('fd3e:efc1:a0e3:703b::2')
+      expect(payload[:network_interfaces][0][:addresses][1][:netmask]).to eq('ffff:ffff:ffff:ffff::')
       expect(payload[:network_interfaces][1][:addresses].count).to eq(2)
       expect(payload[:network_interfaces][1][:addresses][0][:address]).to eq('1.2.3.5')
       expect(payload[:network_interfaces][1][:addresses][1][:address]).to eq('1.2.3.6')
@@ -302,9 +305,9 @@ RSpec.describe GenesisCollector::Collector do
     context 'with bonded interfaces' do
       before do
         allow(Socket).to receive(:getifaddrs).and_return([
-          instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ipv4?: false)),
-          instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ipv4?: false)),
-          instance_double('Socket::Ifaddr', name: 'bond0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ipv4?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0'))
+          instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip?: false)),
+          instance_double('Socket::Ifaddr', name: 'eth1', addr: instance_double('Socket::Addrinfo', ip?: false)),
+          instance_double('Socket::Ifaddr', name: 'bond0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ip?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.0.0.0'))
         ])
         stub_file_content('/sys/class/net/eth0/address', '0c:ca:ca:03:12:34')
         stub_file_content('/sys/class/net/eth1/address', '0c:ca:ca:03:12:34')

@@ -10,9 +10,9 @@ module GenesisCollector
         next if ifaddr.addr.nil?
         interfaces[ifaddr.name] ||= {}
         interfaces[ifaddr.name][:addresses] ||= []
-        next unless ifaddr.addr.ipv4?
+        next unless ifaddr.addr.ip?
         interfaces[ifaddr.name][:addresses] << {
-          address:  ifaddr.addr.ip_address,
+          address:  ifaddr.addr.ip_address.split('%').first,
           netmask:  ifaddr.netmask.ip_address
         }
       end
