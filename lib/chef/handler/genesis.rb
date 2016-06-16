@@ -23,6 +23,7 @@ class Chef
           @bugsnag_config.app_version = GenesisCollector::VERSION
           @bugsnag_config.project_root = File.expand_path('../../..', File.dirname(__FILE__))
           @bugsnag_config.release_stage = run_context.node.chef_environment
+          @config[:error_handler] = ->(e) { Bugsnag::Notification.new(e, @bugsnag_config).deliver }
         end
         prepare_report
         send_report
