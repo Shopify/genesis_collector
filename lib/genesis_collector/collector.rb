@@ -124,7 +124,7 @@ module GenesisCollector
     def shellout_with_timeout(command, timeout = 2)
       response = `timeout #{timeout} #{command}`
       unless $CHILD_STATUS.success?
-        puts "Call to #{command} timed out after #{timeout} seconds"
+        STDERR.puts "Call to #{command} timed out after #{timeout} seconds"
         return ''
       end
       response

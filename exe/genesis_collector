@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'bundler/setup'
 require 'genesis_collector'
 require 'pp'
 require 'optparse'
@@ -40,7 +39,7 @@ collector = GenesisCollector::Collector.new(config)
 collector.collect!
 
 if options[:json]
-  puts JSON.generate(collector.payload)
+  puts JSON.pretty_generate(collector.payload)
 else
   puts "SKU: #{collector.sku}"
   pp collector.payload
