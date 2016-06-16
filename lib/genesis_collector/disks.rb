@@ -14,6 +14,10 @@ module GenesisCollector
         d[:slot] = get_scsi_slot(d[:dev]) if d[:dev] =~ /^\/dev\/sd/
       end
       @payload[:disks].delete_if { |d| d[:serial_number].nil? }
+    rescue StandardError => ex
+      # Just to be sure we don't send partial data
+      @payload.delete(:disks)
+      raise ex
     end
 
     private
