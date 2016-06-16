@@ -16,6 +16,9 @@ OptionParser.new do |opts|
   opts.on('--submit', 'Submit data to Genesis server') do
     options[:submit] = true
   end
+  opts.on('--json', 'Output JSON') do
+    options[:json] = true
+  end
   opts.on_tail('-h', '--help', 'Show this message') do
     puts opts
     exit
@@ -36,7 +39,11 @@ end
 collector = GenesisCollector::Collector.new(config)
 collector.collect!
 
-puts "SKU: #{collector.sku}"
-pp collector.payload
+if options[:json]
+  puts JSON.generate(collector.payload)
+else
+  puts "SKU: #{collector.sku}"
+  pp collector.payload
+end
 
 collector.submit! if true == options[:submit]
