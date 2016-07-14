@@ -5,6 +5,7 @@ module GenesisCollector
 
     def collect_network_interfaces
       interfaces = {}
+      dhcp_leases = parse_dhcp_leases
       Socket.getifaddrs.each do |ifaddr|
         next if ifaddr.name.start_with?('lo', 'docker', 'veth')
         next if ifaddr.addr.nil?
@@ -23,6 +24,9 @@ module GenesisCollector
         if i[:status] == 'up'
           i[:speed] = get_interface_speed(i[:name])
           i[:duplex] = read_interface_info(i[:name], 'duplex')
+          if expires_at = dhcp_leases.fetch(i[:name], {})['expires_at']
+            i[:dhcp_expires_at] = expires_at
+          end
         end
         i[:neighbor] = get_network_neighbor(i[:name])
         i.merge!(get_lspci_data(i[:name])) if File.exist?("/sys/class/net/#{i[:name]}/device")
@@ -102,6 +106,39 @@ module GenesisCollector
         end
       end
       data
+    end
+
+    def parse_dhcp_leases
+      Dir.glob('/var/lib/dhcp/dhclient.*.leases').each_with_object({}) do |f, hash|
+        hash.merge!(parse_dhclient_lease(f))
+      end
+    end
+
+    def parse_dhclient_lease(file)
+      opts = {}
+      File.read(file).lines.each_with_object({}) do |l, leases|
+        l.strip!
+        if l == "lease {"
+          opts = {}
+        elsif l == "}"
+          interface = opts['interface']
+          leases[interface] = opts
+        else
+          l.sub!(";", "")
+          if !l.start_with?("option")
+            key = l.split(" ")[0]
+            vals = l.split(" ")[1..-1]
+            vals.map! {|v| v.gsub(/"/, "") }
+            opts[key] = vals.join(" ")
+            opts['expires_at'] = vals[1..-1].join(" ") if key == 'expire'
+          elsif l.start_with?("option")
+            key = l.split(" ")[1]
+            val = l.split(" ")[2..-1].join(" ")
+            val.gsub!(/"/, "")
+            opts[key] = val
+          end
+        end
+      end
     end
 
   end
