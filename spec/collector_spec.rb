@@ -274,8 +274,8 @@ RSpec.describe GenesisCollector::Collector do
       allow(File).to receive(:readlink).with('/sys/class/net/eth1/device').and_return('../../../0000:06:00.1')
       stub_shellout('lspci -v -mm -s 0000:06:00.0', fixture('lspci'))
       stub_shellout('lspci -v -mm -s 0000:06:00.1', fixture('lspci'))
-      fixture('dhclient.eth0.leases')
-      allow(Dir).to receive(:glob).with('/var/lib/dhcp/dhclient.*.leases').and_return(['spec/fixtures/dhclient.eth0.leases'])
+      fixture('dhclient.eth1.leases')
+      allow(Dir).to receive(:glob).with('/var/lib/dhcp/dhclient.*.leases').and_return(['spec/fixtures/dhclient.eth1.leases'])
     end
     let(:payload) { collector.collect_network_interfaces; collector.payload }
     it 'should get 2 interfaces' do
@@ -318,8 +318,8 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:network_interfaces][1][:addresses][1][:netmask]).to eq('255.0.0.0')
     end
     it 'gets dhcp_expires_at' do
-      expect(payload[:network_interfaces][0][:dhcp_expires_at]).to eq('2016/07/12 21:13:32')
-      expect(payload[:network_interfaces][1][:dhcp_expires_at]).to be nil
+      expect(payload[:network_interfaces][1][:addresses][0][:dhcp_expires_at]).to eq('2016/07/12 21:13:32')
+      expect(payload[:network_interfaces][0][:addresses][0][:dhcp_expires_at]).to be nil
     end
     context 'with a down interface' do
       before do

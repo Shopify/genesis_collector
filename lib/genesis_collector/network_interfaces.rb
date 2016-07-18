@@ -24,13 +24,17 @@ module GenesisCollector
         if i[:status] == 'up'
           i[:speed] = get_interface_speed(i[:name])
           i[:duplex] = read_interface_info(i[:name], 'duplex')
-          if expires_at = dhcp_leases.fetch(i[:name], {})['expires_at']
-            i[:dhcp_expires_at] = expires_at
-          end
         end
         i[:neighbor] = get_network_neighbor(i[:name])
         i.merge!(get_lspci_data(i[:name])) if File.exist?("/sys/class/net/#{i[:name]}/device")
         i.merge!(get_interface_driver(i[:name]))
+        (i[:addresses] || []).each do |addr|
+          expires_at = dhcp_leases.fetch(i[:name], {})['expires_at']
+          dhcp_ip = dhcp_leases.fetch(i[:name], {})['fixed-address']
+          if expires_at && dhcp_ip == addr[:address]
+            addr[:dhcp_expires_at] = expires_at
+          end
+        end
       end
     end
 
