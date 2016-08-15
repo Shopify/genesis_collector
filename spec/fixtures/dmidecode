@@ -123,6 +123,28 @@ Processor Information
 		Enhanced Virtualization
 		Power/Performance Control
 
+Handle 0x007C, DMI type 4, 42 bytes
+Processor Information
+	Socket Designation: SOCKET 3
+	Type: <OUT OF SPEC>
+	Family: <OUT OF SPEC>
+	Manufacturer: Not Specified
+	ID: 00 00 00 00 00 00 00 00
+	Version: Not Specified
+	Voltage: Unknown
+	External Clock: Unknown
+	Max Speed: Unknown
+	Current Speed: Unknown
+	Status: Unpopulated
+	Upgrade: <OUT OF SPEC>
+	L1 Cache Handle: Not Provided
+	L2 Cache Handle: Not Provided
+	L3 Cache Handle: Not Provided
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: Not Specified
+	Characteristics: None
+
 Handle 0x002B, DMI type 16, 23 bytes
 Physical Memory Array
 	Location: System Board Or Motherboard
@@ -146,10 +168,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F2EB     
+	Manufacturer: Samsung
+	Serial Number: 1435F2EB
 	Asset Tag: DimmA1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -188,10 +210,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F20E     
+	Manufacturer: Samsung
+	Serial Number: 1435F20E
 	Asset Tag: DimmB1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -230,10 +252,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F2DE     
+	Manufacturer: Samsung
+	Serial Number: 1435F2DE
 	Asset Tag: DimmC1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -272,10 +294,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F320     
+	Manufacturer: Samsung
+	Serial Number: 1435F320
 	Asset Tag: DimmD1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -323,10 +345,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F31C     
+	Manufacturer: Samsung
+	Serial Number: 1435F31C
 	Asset Tag: DimmE1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -365,10 +387,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F31B     
+	Manufacturer: Samsung
+	Serial Number: 1435F31B
 	Asset Tag: DimmF1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -407,10 +429,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F322     
+	Manufacturer: Samsung
+	Serial Number: 1435F322
 	Asset Tag: DimmG1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -449,10 +471,10 @@ Memory Device
 	Type: DDR3
 	Type Detail: Registered (Buffered)
 	Speed: 1333 MHz
-	Manufacturer: Samsung            
-	Serial Number: 1435F2E4     
+	Manufacturer: Samsung
+	Serial Number: 1435F2E4
 	Asset Tag: DimmH1_AssetTag
-	Part Number: M393B2G70QH0-YK0 
+	Part Number: M393B2G70QH0-YK0
 	Rank: 2
 	Configured Clock Speed: 1333 MHz
 
@@ -476,4 +498,3 @@ Memory Device
 	Part Number: DimmH2_PartNumber
 	Rank: Unknown
 	Configured Clock Speed: Unknown
-
