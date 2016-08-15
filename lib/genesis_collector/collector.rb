@@ -82,7 +82,7 @@ module GenesisCollector
     end
 
     def collect_cpus
-      @payload[:cpus] = get_dmi_data['processor'].map do |p|
+      @payload[:cpus] = get_dmi_data['processor'].reject { |p| p['type'] =~ /<OUT OF SPEC>/ }.map do |p|
         {
           description: p['version'],
           cores: p['core_count'].to_i,

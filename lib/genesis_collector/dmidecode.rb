@@ -72,7 +72,7 @@ module GenesisCollector
           raw_data = line.strip.split(':')
           if raw_data.is_a?(Array) && raw_data.length == 2
             k, v = raw_data
-            dict[current_title].last[standardize_dmi_key(k)] = v.strip
+            dict[current_title].last[standardize_dmi_key(k.strip)] = v.strip
           end
         end
       end
