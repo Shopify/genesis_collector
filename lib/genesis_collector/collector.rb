@@ -106,7 +106,8 @@ module GenesisCollector
             bank: m['bank_locator'],
             slot: m['locator'],
             product: empty ? nil : m['part_number'],
-            vendor_name: empty ? nil : m['manufacturer']
+            vendor_name: empty ? nil : m['manufacturer'],
+            serial_number: empty ? nil : m['serial_number']
           }
         end
       end.compact
