@@ -547,6 +547,10 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:memories][0][:product]).to eq('M393B2G70QH0-YK0')
       expect(payload[:memories][1][:product]).to eq(nil)
     end
+    it 'should get serial_number' do
+      expect(payload[:memories][0][:serial_number]).to eq('1435F2EB')
+      expect(payload[:memories][1][:serial_number]).to eq(nil)
+    end
   end
   describe '#parse_lldp' do
     it 'should only call lldp once' do
