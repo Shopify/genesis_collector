@@ -44,7 +44,11 @@ module GenesisCollector
         'Content-Type'  => 'application/json'
       }
       http = SimpleHTTP.new(@config[:endpoint], headers: headers)
-      http.patch("/api/devices/#{@sku}", @payload)
+      response = http.patch("/api/devices/#{@sku}", @payload)
+      if ['404', '422'].include?(response.code)
+        http.post('/api/devices', sku: @sku, type: 'Server')
+        http.patch("/api/devices/#{@sku}", @payload)
+      end
     end
 
     def collect_basic_data

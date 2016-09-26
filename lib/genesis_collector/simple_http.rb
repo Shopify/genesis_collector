@@ -11,6 +11,10 @@ module GenesisCollector
       @timeout = timeout
     end
 
+    def post(endpoint, payload = nil, headers = {})
+      verb(endpoint, payload, headers) { |uri| Net::HTTP::Post.new(uri) }
+    end
+
     def patch(endpoint, payload = nil, headers = {})
       verb(endpoint, payload, headers) { |uri| Net::HTTP::Patch.new(uri) }
     end
