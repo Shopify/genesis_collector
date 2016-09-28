@@ -55,6 +55,7 @@ module GenesisCollector
       @payload = {
         type: 'Server',
         hostname: get_hostname,
+        fqdn: get_fqdn,
         os: {
           distribution: get_distribution,
           release: get_release,
@@ -153,6 +154,10 @@ module GenesisCollector
 
     def get_hostname
       Socket.gethostname
+    end
+
+    def get_fqdn
+      Socket.gethostbyname(Socket.gethostname)[0]
     end
 
     def get_last_boot_time

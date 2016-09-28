@@ -93,7 +93,8 @@ RSpec.describe GenesisCollector::Collector do
 
   describe '#collect_basic_data' do
     before do
-      allow(Socket).to receive(:gethostname).and_return('test1234.example.com')
+      allow(Socket).to receive(:gethostname).and_return('test1234')
+      allow(Socket).to receive(:gethostbyname).and_return(['test1234.example.com', ['test1234'], 2, "\xAC\x18@1"])
       stub_file_content('/etc/lsb-release', fixture('lsb-release'))
       stub_dmi('system-manufacturer', 'Acme Inc')
       stub_dmi('baseboard-manufacturer', 'Super Acme Inc')
@@ -111,7 +112,18 @@ RSpec.describe GenesisCollector::Collector do
       end
       let(:payload) { collector.payload }
       it 'should get hostname' do
-        expect(payload[:hostname]).to eq('test1234.example.com')
+        expect(payload[:hostname]).to eq('test1234')
+      end
+      it 'should get fqdn' do
+        expect(payload[:fqdn]).to eq('test1234.example.com')
+      end
+      context 'with hostname == fqdn' do
+        before { allow(Socket).to receive(:gethostname).and_return('test1234.example.com') }
+        it 'hostname equals fqdn' do
+          collector.collect_basic_data
+          expect(payload[:hostname]).to eq('test1234.example.com')
+          expect(payload[:fqdn]).to eq('test1234.example.com')
+        end
       end
       it 'should get os attributes' do
         expect(payload[:os][:distribution]).to eq('Ubuntu')
