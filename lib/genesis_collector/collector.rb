@@ -157,7 +157,7 @@ module GenesisCollector
     end
 
     def get_fqdn
-      Socket.gethostbyname(Socket.gethostname)[0]
+      Socket.gethostbyname(Socket.gethostname)[0] rescue nil
     end
 
     def get_last_boot_time

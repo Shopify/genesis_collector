@@ -125,6 +125,13 @@ RSpec.describe GenesisCollector::Collector do
           expect(payload[:fqdn]).to eq('test1234.example.com')
         end
       end
+      context 'with DNS not working' do
+        before { allow(Socket).to receive(:gethostbyname).and_raise(SocketError) }
+        it 'returns nil for fqdn' do
+          collector.collect_basic_data
+          expect(payload[:fqdn]).to eq(nil)
+        end
+      end
       it 'should get os attributes' do
         expect(payload[:os][:distribution]).to eq('Ubuntu')
         expect(payload[:os][:release]).to eq('14.04')
