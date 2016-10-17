@@ -41,8 +41,12 @@ module GenesisCollector
     end
 
     def disk_uuid(drive)
-      blk_id = shellout_with_timeout('blkid', 5).split("\n").detect { |s| s.include? drive }
+      blk_id = blkid.detect { |s| s.include? drive }
       /UUID="([^ ]*)"/.match(blk_id, 1)[1]
+    end
+
+    def blkid
+      @blkid ||= shellout_with_timeout('blkid', 5).split("\n")
     end
 
     # FIXME - we might want to handle raid devices differently by parsing megacli
