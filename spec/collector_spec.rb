@@ -443,6 +443,8 @@ RSpec.describe GenesisCollector::Collector do
     before do
       allow_any_instance_of(GenesisCollector::Collector).to \
         receive(:ensure_command).with('smartctl').and_return('/usr/sbin/smartctl')
+      allow_any_instance_of(GenesisCollector::Collector).to \
+        receive(:ensure_command).with('blkid').and_return('/sbin/blkid')
       stub_shellout('smartctl --scan', fixture('smartctl/scan'))
       stub_shellout_with_timeout('smartctl -i /dev/sda', 5, fixture('smartctl/sda'))
       stub_shellout_with_timeout('smartctl -i /dev/sdb', 5, fixture('smartctl/sdb'))
@@ -451,6 +453,7 @@ RSpec.describe GenesisCollector::Collector do
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,0', 5, fixture('smartctl/megaraid0'))
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,1', 5, fixture('smartctl/megaraid0'))
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,2', 5, fixture('smartctl/megaraid0'))
+      stub_shellout_with_timeout("blkid", 5, fixture('blkid'))
       stub_symlink_target('/sys/class/block/sda/device', '../../../5:0:0:0')
       stub_symlink_target('/sys/class/block/sdb/device', '../../../4:0:0:0')
       stub_symlink_target('/sys/class/block/sdc/device', '../../../3:0:0:0')
@@ -499,6 +502,13 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][2][:serial_number]).to eq('BTWA5351028H240AGN')
       expect(payload[:disks][3][:serial_number]).to eq('PN1334PCKSX7JS')
       expect(payload[:disks][4][:serial_number]).to eq('14270C89BDC6')
+    end
+    it 'should get uuid' do
+      expect(payload[:disks][0][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce31')
+      expect(payload[:disks][1][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce31')
+      expect(payload[:disks][2][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce32')
+      expect(payload[:disks][3][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce32')
+      expect(payload[:disks][4][:uuid]).to be nil
     end
   end
   describe '#collect_cpus' do
