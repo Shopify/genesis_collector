@@ -3,6 +3,7 @@ module GenesisCollector
 
     def collect_disks
       ensure_command('smartctl')
+      ensure_command('blkid')
       @payload[:disks] = enumerate_disks
       @payload[:disks].each do |d|
         info = get_disk_info(d.delete(:smartctl_cmd))
@@ -12,6 +13,7 @@ module GenesisCollector
         d[:serial_number] = info.match(/^Serial (?:n|N)umber:\s+(.*)$/)[1] rescue nil
         d[:size] = info.match(/^User Capacity:\s+(.*)$/)[1].split('bytes')[0].strip.gsub(',', '')
         d[:slot] = get_scsi_slot(d[:dev]) if d[:dev] =~ /^\/dev\/sd/
+        d[:uuid] = disk_uuid(d[:dev]) if d[:dev] =~ /^\/dev\/sd/
       end
       @payload[:disks].delete_if { |d| d[:serial_number].nil? }
     rescue StandardError => ex
@@ -36,6 +38,15 @@ module GenesisCollector
 
     def get_disk_info(cmd_params)
       shellout_with_timeout("smartctl -i #{cmd_params}", 5)
+    end
+
+    def disk_uuid(drive)
+      blk_id = blkid.detect { |s| s.include? drive }
+      /UUID="([^ ]*)"/.match(blk_id, 1)[1]
+    end
+
+    def blkid
+      @blkid ||= shellout_with_timeout('blkid', 5).split("\n")
     end
 
     # FIXME - we might want to handle raid devices differently by parsing megacli

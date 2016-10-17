@@ -1,0 +1,4 @@
+/dev/sda1: UUID="7bef60d0-e72a-5b2b-03ef-0d65f129ce31" UUID_SUB="2b9cd3cc-ab04-deaa-6623-7d5df9579e02" LABEL="console:0" TYPE="linux_raid_member"
+/dev/sdb1: UUID="7bef60d0-e72a-5b2b-03ef-0d65f129ce31" UUID_SUB="f033fa7d-3d74-8315-a7d3-cae6c30ade53" LABEL="console:0" TYPE="linux_raid_member"
+/dev/sdc1: UUID="7bef60d0-e72a-5b2b-03ef-0d65f129ce32" UUID_SUB="2b9cd3cc-ab04-deaa-6623-7d5df9579e03" LABEL="console:0" TYPE="linux_raid_member"
+/dev/sdd1: UUID="7bef60d0-e72a-5b2b-03ef-0d65f129ce32" UUID_SUB="f033fa7d-3d74-8315-a7d3-cae6c30ade54" LABEL="console:0" TYPE="linux_raid_member"
