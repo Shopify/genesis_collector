@@ -42,7 +42,7 @@ module GenesisCollector
 
     def disk_uuid(drive)
       blk_id = blkid.detect { |s| s.include? drive }
-      /UUID="([^ ]*)"/.match(blk_id, 1)[1]
+      /UUID="([^ ]*)"/.match(blk_id, 1) { |m| m[1] }
     end
 
     def blkid
