@@ -453,6 +453,10 @@ RSpec.describe GenesisCollector::Collector do
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,0', 5, fixture('smartctl/megaraid0'))
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,1', 5, fixture('smartctl/megaraid0'))
       stub_shellout_with_timeout('smartctl -i /dev/bus/0 -d megaraid,2', 5, fixture('smartctl/megaraid0'))
+      stub_shellout_with_timeout('smartctl -H /dev/sda', 5, fixture('smartctl/sda_h'))
+      stub_shellout_with_timeout('smartctl -H /dev/sdb', 5, fixture('smartctl/sdb_h'))
+      stub_shellout_with_timeout('smartctl -H /dev/sdc', 5, fixture('smartctl/sda_h'))
+      stub_shellout_with_timeout('smartctl -H /dev/sdd', 5, fixture('smartctl/sda_h'))
       stub_shellout_with_timeout("blkid", 5, fixture('blkid'))
       stub_symlink_target('/sys/class/block/sda/device', '../../../5:0:0:0')
       stub_symlink_target('/sys/class/block/sdb/device', '../../../4:0:0:0')
@@ -518,6 +522,10 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][2][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce32')
       expect(payload[:disks][3][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce32')
       expect(payload[:disks][4][:uuid]).to be nil
+    end
+
+    it 'should set unhealthy disks' do
+      expect(payload[:disks][1][:status]).to eq('unhealthy')
     end
   end
 
