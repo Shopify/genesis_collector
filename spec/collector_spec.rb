@@ -459,10 +459,13 @@ RSpec.describe GenesisCollector::Collector do
       stub_symlink_target('/sys/class/block/sdc/device', '../../../3:0:0:0')
       stub_symlink_target('/sys/class/block/sdd/device', '../../../2:0:0:0')
     end
+
     let(:payload) { collector.collect_disks; collector.payload }
+
     it 'should get disks' do
       expect(payload[:disks].count).to eq(7)
     end
+
     it 'should get product' do
       expect(payload[:disks][0][:product]).to eq('PERC H710P')
       expect(payload[:disks][1][:product]).to eq('SAMSUNG MZ7WD960HMHP-00003')
@@ -470,6 +473,7 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][3][:product]).to eq('HGST HUS724040ALA640')
       expect(payload[:disks][4][:product]).to eq('Crucial_CT960M500SSD1')
     end
+
     it 'should get vendor' do
       expect(payload[:disks][0][:vendor_name]).to eq('DELL')
       expect(payload[:disks][1][:vendor_name]).to eq('SAMSUNG')
@@ -477,6 +481,7 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][3][:vendor_name]).to eq('HGST')
       expect(payload[:disks][4][:vendor_name]).to eq('Crucial')
     end
+
     it 'should get dev' do
       expect(payload[:disks][0][:dev]).to eq('/dev/sda')
       expect(payload[:disks][1][:dev]).to eq('/dev/sdb')
@@ -484,11 +489,13 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][3][:dev]).to eq('/dev/sdd')
       expect(payload[:disks][4][:dev]).to eq('/dev/bus/0')
     end
+
     it 'should get kind' do
       expect(payload[:disks][0][:kind]).to eq('SCSI device')
       expect(payload[:disks][1][:kind]).to eq('SCSI device')
       expect(payload[:disks][4][:kind]).to eq('SCSI device')
     end
+
     it 'should get size' do
       expect(payload[:disks][0][:size]).to eq('959656755200')
       expect(payload[:disks][1][:size]).to eq('960197124096')
@@ -496,6 +503,7 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][3][:size]).to eq('4000787030016')
       expect(payload[:disks][4][:size]).to eq('960197124096')
     end
+
     it 'should get serial number' do
       expect(payload[:disks][0][:serial_number]).to eq('004db85d065c635f1d00e33c2320344a')
       expect(payload[:disks][1][:serial_number]).to eq('S1E4NYAG101668')
@@ -503,6 +511,7 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][3][:serial_number]).to eq('PN1334PCKSX7JS')
       expect(payload[:disks][4][:serial_number]).to eq('14270C89BDC6')
     end
+
     it 'should get uuid' do
       expect(payload[:disks][0][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce31')
       expect(payload[:disks][1][:uuid]).to eq('7bef60d0-e72a-5b2b-03ef-0d65f129ce31')
@@ -511,6 +520,7 @@ RSpec.describe GenesisCollector::Collector do
       expect(payload[:disks][4][:uuid]).to be nil
     end
   end
+
   describe '#collect_cpus' do
     before do
       stub_shellout('dmidecode --type processor --type memory', fixture('dmidecode'))
