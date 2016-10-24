@@ -31,7 +31,7 @@ module GenesisCollector
     def disk_healthy(disk)
       short_tests = shellout_with_timeout("smartctl -H #{disk}", 5)
 
-      !!short_tests.match(/result: PASSED/)
+      short_tests =~ /result: PASSED/
     rescue
       true
     end
