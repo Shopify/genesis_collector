@@ -131,7 +131,10 @@ def stub_shellout(command, return_value)
     receive(:shellout_with_timeout).with(command).and_return(return_value)
 end
 
-def stub_shellout_with_timeout(command, timeout, return_value)
+def stub_shellout_with_timeout(command, timeout, return_value, exit_status = 0)
   allow_any_instance_of(GenesisCollector::Collector).to \
-    receive(:shellout_with_timeout).with(command, timeout).and_return(return_value)
+    receive(:shellout_with_timeout).with(command, timeout) do
+      `exit #{exit_status}`
+      return_value
+    end
 end
