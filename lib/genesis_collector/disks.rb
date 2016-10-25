@@ -12,8 +12,12 @@ module GenesisCollector
         d[:product] = info.match(/^(?:Device Model|Product):\s+(.*)$/)[1]
         d[:serial_number] = info.match(/^Serial (?:n|N)umber:\s+(.*)$/)[1] rescue nil
         d[:size] = info.match(/^User Capacity:\s+(.*)$/)[1].split('bytes')[0].strip.gsub(',', '')
-        d[:slot] = get_scsi_slot(d[:dev]) if d[:dev] =~ /^\/dev\/sd/
-        d[:uuid] = disk_uuid(d[:dev]) if d[:dev] =~ /^\/dev\/sd/
+
+        if d[:dev].start_with?("/dev/sd")
+          d[:slot] = get_scsi_slot(d[:dev])
+          d[:uuid] = disk_uuid(d[:dev])
+          d[:status] = "unhealthy" unless disk_healthy(d[:dev])
+        end
       end
       @payload[:disks].delete_if { |d| d[:serial_number].nil? }
     rescue StandardError => ex
@@ -23,6 +27,14 @@ module GenesisCollector
     end
 
     private
+
+    def disk_healthy(disk)
+      short_tests = shellout_with_timeout("smartctl -H #{disk}", 5)
+
+      short_tests =~ /result: PASSED/
+    rescue
+      true
+    end
 
     def enumerate_disks
       raw = shellout_with_timeout('smartctl --scan').strip
