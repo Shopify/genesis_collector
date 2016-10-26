@@ -16,7 +16,7 @@ module GenesisCollector
         if d[:dev].start_with?("/dev/sd")
           d[:slot] = get_scsi_slot(d[:dev])
           d[:uuid] = disk_uuid(d[:dev])
-          d[:status] = "unhealthy" unless disk_healthy(d[:dev])
+          d[:status] = disk_healthy(d[:dev]) ? "healthy" : "unhealthy"
         end
       end
       @payload[:disks].delete_if { |d| d[:serial_number].nil? }
@@ -29,9 +29,8 @@ module GenesisCollector
     private
 
     def disk_healthy(disk)
-      short_tests = shellout_with_timeout("smartctl -H #{disk}", 5)
-
-      short_tests =~ /result: PASSED/
+      shellout_with_timeout("smartctl -H #{disk}", 5)
+      $CHILD_STATUS.success?
     rescue
       true
     end
