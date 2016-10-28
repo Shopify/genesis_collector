@@ -28,29 +28,23 @@ module GenesisCollector
 
     private
 
-    DISK_STATUS = {
-      healthy: "healthy",
-      unhealthy: "unhealthy",
-      unknown: "unknown",
-      nil => "unknown"
-    }
     def disk_status(disk)
       output = shellout_with_timeout("smartctl -H #{disk}", 5)
 
       case output
       when /SMART overall-health self-assessment test result: FAILED/
-        DISK_STATUS[:unhealthy]
+        "unhealthy"
       when /SMART overall-health self-assessment test result: PASSED/
-        DISK_STATUS[:healthy]
+        "healthy"
       when /SMART overall-health self-assessment test result: UNKNOWN/
-        DISK_STATUS[:unknown]
+        "unknown"
       when /SMART Health Status: OK/
-        DISK_STATUS[:healthy]
+        "healthy"
       else
-        DISK_STATUS[:unhealthy]
+        "unhealthy"
       end
     rescue
-      DISK_STATUS[:healthy]
+      "healthy"
     end
 
     def enumerate_disks
