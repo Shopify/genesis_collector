@@ -101,6 +101,19 @@ RSpec.describe GenesisCollector::Collector do
       stub_dmi('chassis-manufacturer', 'Acme Chassis Inc')
       stub_shellout('date -d "`cut -f1 -d. /proc/uptime` seconds ago" -u', 'Mon Aug 31 09:56:15 UTC 2015')
     end
+    context 'with missing fru data' do
+      before do
+        stub_dmi('system-product-name', '')
+        stub_dmi('system-serial-number', '')
+        stub_dmi('baseboard-product-name', '')
+        stub_dmi('baseboard-serial-number', '')
+        stub_dmi('chassis-serial-number', '')
+        stub_shellout('ipmitool fru', fixture('ipmitool_fru_broken'))
+      end
+      it 'should get product name' do
+        expect { collector.collect_basic_data }.to raise_error(RuntimeError, /IPMI fru output missing key: Product Part Number/)
+      end
+    end
     context 'with working bios' do
       before do
         stub_dmi('system-product-name', 'ABC123+')
