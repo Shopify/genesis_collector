@@ -55,10 +55,12 @@ RSpec.describe GenesisCollector::Collector do
       before do
         stub_dmi('baseboard-manufacturer', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nSupermicro")
         stub_dmi('baseboard-serial-number', "# SMBIOS implementations newer than version 2.8 are not\n# fully supported by this version of dmidecode.\nHM15CS331193")
+        stub_dmi('system-manufacturer', "Supermicro\nInvalid entry length (16). Fixed up to 11.")
       end
       it 'should get real value' do
         expect(collector.send(:read_dmi, 'baseboard-manufacturer')).to eq('Supermicro')
         expect(collector.send(:read_dmi, 'baseboard-serial-number')).to eq('HM15CS331193')
+        expect(collector.send(:read_dmi, 'system-manufacturer')).to eq('Supermicro')
       end
     end
   end
