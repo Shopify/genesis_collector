@@ -195,7 +195,7 @@ module GenesisCollector
     end
 
     def read_dmi(key)
-      value = shellout_with_timeout("dmidecode -s #{key}").gsub(/^#.+$/, '').strip
+      value = shellout_with_timeout("dmidecode -s #{key}").gsub(/^#.+$/, '').gsub(/^Invalid entry length.*$/,'').strip
       value = '' if '0123456789' == value # sometimes the firmware is broken
       value.empty? ? nil : value
     end
