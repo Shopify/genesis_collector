@@ -22,7 +22,11 @@ module GenesisCollector
     def read_ipmi_fru(key)
       @ipmi_fru_output ||= shellout_with_timeout('ipmitool fru')
       match = @ipmi_fru_output.match(/#{key}\s*:\s*(\S+)$/)
-      raise "IPMI fru output missing key: #{key}" if match.nil?
+      if match.nil?
+        @ipmi_fru_output = shellout_with_timeout('ipmicfg -fru list')
+        match = @ipmi_fru_output.match(/#{key}\s*:\s*(\S+)$/)
+        raise "IPMI fru output missing key: #{key}" if match.nil?
+      end
       match[1]
     end
 
