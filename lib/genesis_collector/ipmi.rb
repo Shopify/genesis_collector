@@ -1,5 +1,6 @@
 module GenesisCollector
   module IPMI
+    IPMITOOL_TO_IPMICFG = { 'Board Serial' => 'Board Serial number \(BS\)' }
 
     def collect_ipmi
       @payload[:ipmi] = {
@@ -24,7 +25,7 @@ module GenesisCollector
       match = @ipmi_fru_output.match(/#{key}\s*:\s*(\S+)$/)
       if match.nil?
         @ipmi_fru_output = shellout_with_timeout('ipmicfg -fru list')
-        match = @ipmi_fru_output.match(/#{key}\s*:\s*(\S+)$/)
+        match = @ipmi_fru_output.match(/#{IPMITOOL_TO_IPMICFG.fetch(key, key)}\s*=\s*(\S+)$/)
         raise "IPMI fru output missing key: #{key}" if match.nil?
       end
       match[1]
