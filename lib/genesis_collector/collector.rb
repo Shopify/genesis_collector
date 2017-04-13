@@ -106,7 +106,7 @@ module GenesisCollector
         else
           empty = m['size'] == 'No Module Installed'
           {
-            size: m['size'].to_i * 1000000,
+            size: m['size']['GB'] ? m['size'].to_i * 1000000000 : m['size'].to_i * 1000000,
             description: empty ? "Empty #{m['form_factor']}" : "#{m['form_factor']} #{m['type_detail']} #{m['speed']}",
             bank: m['bank_locator'],
             slot: m['locator'],
