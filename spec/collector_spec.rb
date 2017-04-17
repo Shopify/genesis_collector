@@ -596,6 +596,7 @@ RSpec.describe GenesisCollector::Collector do
     it 'should get size' do
       expect(payload[:memories][0][:size]).to eq(16384000000)
       expect(payload[:memories][1][:size]).to eq(0)
+      expect(payload[:memories][2][:size]).to eq(17408000000)
     end
     it 'should get bank' do
       expect(payload[:memories][0][:bank]).to eq('P0_Node0_Channel0_Dimm0')
