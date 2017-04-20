@@ -110,6 +110,8 @@ RSpec.describe GenesisCollector::Collector do
         stub_dmi('baseboard-product-name', '')
         stub_dmi('baseboard-serial-number', '')
         stub_dmi('chassis-serial-number', '')
+        stub_dmi('bios-version', '')
+        stub_shellout('ipmitool mc info', fixture('ipmitool_mc_info'))
         stub_shellout('ipmitool fru', fixture('ipmitool_fru_broken'))
       end
       it 'should get product name' do
@@ -123,6 +125,8 @@ RSpec.describe GenesisCollector::Collector do
         stub_dmi('baseboard-product-name', 'ABC456B+')
         stub_dmi('baseboard-serial-number', '34524623454')
         stub_dmi('chassis-serial-number', '2376482364')
+        stub_dmi('bios-version', '4.23')
+        stub_shellout('ipmitool mc info', fixture('ipmitool_mc_info'))
         collector.collect_basic_data
       end
       let(:payload) { collector.payload }
@@ -160,12 +164,15 @@ RSpec.describe GenesisCollector::Collector do
         expect(payload[:vendor]).to eq('Acme Inc')
       end
       it 'should get extra properties' do
+        expect(payload[:properties].size).to eq(8)
         expect(payload[:properties]['SYSTEM_SERIAL_NUMBER']).to eq('1234567891234')
         expect(payload[:properties]['BASEBOARD_VENDOR']).to eq('Super Acme Inc')
         expect(payload[:properties]['BASEBOARD_PRODUCT_NAME']).to eq('ABC456B+')
         expect(payload[:properties]['BASEBOARD_SERIAL_NUMBER']).to eq('34524623454')
         expect(payload[:properties]['CHASSIS_VENDOR']).to eq('Acme Chassis Inc')
         expect(payload[:properties]['CHASSIS_SERIAL_NUMBER']).to eq('2376482364')
+        expect(payload[:properties]['BIOS_VERSION']).to eq('4.23')
+        expect(payload[:properties]['IPMI_FIRMWARE_VERSION']).to eq('1.23')
       end
     end
 
@@ -180,6 +187,8 @@ RSpec.describe GenesisCollector::Collector do
         stub_dmi('baseboard-product-name', 'ABC456B+')
         stub_dmi('baseboard-serial-number', '34524623454')
         stub_dmi('chassis-serial-number', '2376482364')
+        stub_dmi('bios-version', '4.23')
+        stub_shellout('ipmitool mc info', fixture('ipmitool_mc_info'))
         collector.collect_basic_data
       end
       let(:payload) { collector.payload }
@@ -198,16 +207,21 @@ RSpec.describe GenesisCollector::Collector do
         stub_dmi('baseboard-product-name', 'X9DRW')
         stub_dmi('baseboard-serial-number', '0123456789')
         stub_dmi('chassis-serial-number', '0123456789')
+        stub_dmi('bios-version', '4.23')
         stub_shellout('ipmitool fru', fixture('ipmitool_fru'))
+        stub_shellout('ipmitool mc info', fixture('ipmitool_mc_info'))
         collector.collect_basic_data
       end
       let(:payload) { collector.payload }
       it 'should get correct extra properties' do
         expect(payload[:product]).to eq('SYS-2028DR-HTTR')
+        expect(payload[:properties].size).to eq(8)
         expect(payload[:properties]['SYSTEM_SERIAL_NUMBER']).to eq('S23425234234324')
         expect(payload[:properties]['BASEBOARD_PRODUCT_NAME']).to eq('X9DRT-PT')
         expect(payload[:properties]['BASEBOARD_SERIAL_NUMBER']).to eq('ZM234234235234')
         expect(payload[:properties]['CHASSIS_SERIAL_NUMBER']).to eq('CA1351A238463')
+        expect(payload[:properties]['BIOS_VERSION']).to eq('4.23')
+        expect(payload[:properties]['IPMI_FIRMWARE_VERSION']).to eq('1.23')
       end
     end
   end
@@ -259,7 +273,10 @@ RSpec.describe GenesisCollector::Collector do
   end
 
   describe '#collect_ipmi' do
-    before { stub_shellout_with_timeout('ipmitool lan print', 10, fixture('ipmitool_lan_print')) }
+    before {
+      stub_shellout_with_timeout('ipmitool lan print', 10, fixture('ipmitool_lan_print'))
+      stub_shellout('ipmitool mc info', fixture('ipmitool_mc_info'))
+    }
     let(:payload) { collector.collect_ipmi; collector.payload }
     it 'should get address' do
       expect(payload[:ipmi][:address]).to eq('1.2.1.2')

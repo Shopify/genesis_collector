@@ -1,0 +1,24 @@
+Device ID                 : 42
+Device Revision           : 23
+Firmware Revision         : 1.23
+IPMI Version              : 2.0
+Manufacturer ID           : 12345
+Manufacturer Name         : ACME Inc.
+Product ID                : 256 (0x0100)
+Product Name              : Unknown (0x100)
+Device Available          : yes
+Provides Device SDRs      : yes
+Additional Device Support :
+    Sensor Device
+    SDR Repository Device
+    SEL Device
+    FRU Inventory Device
+    IPMB Event Receiver
+    Bridge
+    Chassis Device
+    Nucular Carburator
+Aux Firmware Rev Info     : 
+    0x00
+    0x32
+    0x1e
+    0x1e

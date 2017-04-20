@@ -72,6 +72,8 @@ module GenesisCollector
           'BASEBOARD_SERIAL_NUMBER' => read_dmi('baseboard-serial-number'),
           'CHASSIS_VENDOR' => read_dmi('chassis-manufacturer'),
           'CHASSIS_SERIAL_NUMBER' => read_dmi('chassis-serial-number'),
+          'BIOS_VERSION' => read_dmi('bios-version'),
+          'IPMI_FIRMWARE_VERSION' => read_ipmi_fw('Firmware Revision'),
         }
       }
 

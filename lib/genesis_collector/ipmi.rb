@@ -26,5 +26,11 @@ module GenesisCollector
       match[1]
     end
 
+    def read_ipmi_fw(key)
+      @ipmi_fw_output ||= shellout_with_timeout('ipmitool mc info')
+      match = @ipmi_fw_output.match(/#{key}\s*:\s*(\S+)$/)
+      raise "IPMI FW output missing key: #{key}" if match.nil?
+      match[1]
+    end
   end
 end
