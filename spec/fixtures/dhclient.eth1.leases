@@ -1,0 +1,15 @@
+lease {
+  interface "eth1";
+  fixed-address 1.2.3.5;
+  option subnet-mask 255.255.255.0;
+  option routers 10.10.0.2;
+  option dhcp-lease-time 7200;
+  option dhcp-message-type 5;
+  option domain-name-servers 10.10.0.3;
+  option dhcp-server-identifier 10.10.0.4;
+  option ntp-servers 10.10.0.5,10.10.0.6,10.10.0.7;
+  option domain-name "example.com";
+  renew 2 2016/07/12 20:06:16;
+  rebind 2 2016/07/12 20:58:32;
+  expire 2 2016/07/12 21:13:32;
+}
