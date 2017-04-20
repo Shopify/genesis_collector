@@ -294,6 +294,10 @@ RSpec.describe GenesisCollector::Collector do
 
   describe '#collect_network_interfaces' do
     before do
+      if not Socket.respond_to?(:getifaddrs) then
+        # Ignore failures in MacOS dev environment
+        skip("Socket does not implement getifaddrs on this platform")
+      end
       allow(Socket).to receive(:getifaddrs).and_return([
         instance_double('Socket::Ifaddr', name: 'lo'),
         instance_double('Socket::Ifaddr', name: 'eth0', addr: instance_double('Socket::Addrinfo', ip_address: '1.2.3.4', ip?: true), netmask: instance_double('Socket::Addrinfo', ip_address: '255.255.255.0')),
