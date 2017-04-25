@@ -273,10 +273,10 @@ RSpec.describe GenesisCollector::Collector do
   end
 
   describe '#collect_ipmi' do
-    before {
+    before do
       stub_shellout_with_timeout('ipmitool lan print', 10, fixture('ipmitool_lan_print'))
       stub_shellout('ipmitool mc info', fixture('ipmitool_mc_info'))
-    }
+    end
     let(:payload) { collector.collect_ipmi; collector.payload }
     it 'should get address' do
       expect(payload[:ipmi][:address]).to eq('1.2.1.2')
@@ -294,7 +294,7 @@ RSpec.describe GenesisCollector::Collector do
 
   describe '#collect_network_interfaces' do
     before do
-      if not Socket.respond_to?(:getifaddrs) then
+      unless Socket.respond_to?(:getifaddrs)
         # Ignore failures in MacOS dev environment
         skip("Socket does not implement getifaddrs on this platform")
       end
@@ -653,6 +653,35 @@ RSpec.describe GenesisCollector::Collector do
       allow(collector).to receive(:parse_lldp).and_return({}).once
       collector.send(:get_network_neighbor, 'eth0')
       collector.send(:get_network_neighbor, 'eth1')
+    end
+  end
+  describe '#collect_raids' do
+    # tests are a bit too MegaRAid-specific right now ..
+    context "without RAID controller" do
+      before do
+        stub_shellout_with_timeout('megacli -AdpAllInfo -aAll', 10, 'some error message', 1)
+      end
+      let(:payload) { collector.collect_raids; collector.payload }
+      it 'should gracefully accept a missing RAID card' do
+        expect(payload.has_key?(:properties)).to eq(false)
+        expect(payload.has_key?(:raids)).to eq(false)
+      end
+    end
+    context "with RAID controller" do
+      before do
+        stub_shellout_with_timeout('megacli -AdpAllInfo -aAll', 10, fixture('megacli_AdpAllInfo'))
+        stub_shellout_with_timeout('megacli -LDInfo -Lall -aAll', 10, fixture('megacli_LDInfo'))
+      end
+      let(:payload) { collector.collect_raids; collector.payload }
+      it 'should correctly detect RAID card' do
+        expect(payload[:properties]['MEGARAID_TYPE']).to eq('PERC H710P Adapter')
+        expect(payload[:properties]['MEGARAID_FW_PACKAGE']).to eq('21.3.2-0005')
+        expect(payload[:raids].count).to eq(2)
+        expect(payload[:raids][0]['Name']).to eq('OS')
+        expect(payload[:raids][0]['RAID Level']).to eq('Primary-1, Secondary-0, RAID Level Qualifier-0')
+        expect(payload[:raids][1]['Name']).to eq('Virtual Disk 1')
+        expect(payload[:raids][1]['RAID Level']).to eq('Primary-1, Secondary-3, RAID Level Qualifier-0')
+      end
     end
   end
 end

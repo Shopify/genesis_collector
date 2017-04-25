@@ -1,3 +1,3 @@
 module GenesisCollector
-  VERSION = '1.1.45'
+  VERSION = '1.0.0'
 end
