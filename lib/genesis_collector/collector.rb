@@ -7,6 +7,7 @@ require 'genesis_collector/chef'
 require 'genesis_collector/ipmi'
 require 'genesis_collector/disks'
 require 'genesis_collector/dmidecode'
+require 'genesis_collector/megaraid'
 require 'English'
 
 module GenesisCollector
@@ -18,6 +19,7 @@ module GenesisCollector
     include GenesisCollector::IPMI
     include GenesisCollector::Disks
     include GenesisCollector::DmiDecode
+    include GenesisCollector::MegaRaid
 
     def initialize(config = {})
       @chef_node = config.delete(:chef_node)
@@ -34,6 +36,7 @@ module GenesisCollector
       safely { collect_disks }
       safely { collect_cpus }
       safely { collect_memories }
+      safely { collect_raids }
       @payload
     end
 
@@ -118,6 +121,10 @@ module GenesisCollector
           }
         end
       end.compact
+    end
+
+    def collect_raids
+      collect_megaraid if megaraid?
     end
 
     private
