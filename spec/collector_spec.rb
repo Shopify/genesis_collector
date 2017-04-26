@@ -113,6 +113,7 @@ RSpec.describe GenesisCollector::Collector do
         stub_dmi('bios-version', '')
         stub_shellout('ipmitool mc info', fixture('ipmitool_mc_info'))
         stub_shellout('ipmitool fru', fixture('ipmitool_fru_broken'))
+        stub_shellout('ipmicfg -fru list', fixture('ipmitool_fru_broken'))
       end
       it 'should get product name' do
         expect { collector.collect_basic_data }.to raise_error(RuntimeError, /IPMI fru output missing key: Product Part Number/)
